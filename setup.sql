@@ -1,0 +1,20 @@
+﻿create table movies (
+    id serial NOT NULL,
+    imdb_id character varying,
+    title character varying,
+    bechdel_rating integer,
+    bechdel_dispute integer,
+    year integer,
+    rated character varying,
+    imdb_rating float,
+    tomato_meter integer,
+    tomato_rating float,
+    tomato_fresh integer,
+    tomato_rotten integer,
+    tomato_user_meter integer,
+    tomato_user_rating float,
+    box_office integer,
+    production character varying,
+    genre character varying,
+    PRIMARY KEY (id)
+);
