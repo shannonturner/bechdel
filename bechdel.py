@@ -33,12 +33,14 @@ class Root(object):
             bechdel_response = requests.get(bechdel_request_url).json()
         except requests.ConnectionError:
             error_message = {'message': 'Failed to get requested information from the Bechdel Test API'}
-            self.error(**error_message)
-
-        if len(bechdel_response) == 0:
-            return wrap_in_css('<i>Sorry, we weren\'t able to find: {0}</i><br>Try a different search!'.format(search))
+            return self.error(**error_message)
 
         if len(bechdel_response) > 1:
+
+            if type(bechdel_response) == dict:
+                if bechdel_response.get('status') is not None and bechdel_response.get('status') != "200":
+                    error_message = {'message': 'Failed to get requested information from the Bechdel Test API; {0}'.format(bechdel_response.get('description'))}
+                    return self.error(**error_message)
 
             page_source = []           
 
@@ -96,7 +98,7 @@ class Root(object):
 
         if bechdel['imdbid'] is None or bechdel['rating'] is -1:
             error_message = {'message': 'No IMDB ID given or Rating not found.  Please try your search again.'}
-            self.error(**error_message)
+            return self.error(**error_message)
 
         # Get the tomato rating, too.
         omdb_request_url = 'http://www.omdbapi.com/?i={0}&y={1}&tomatoes=true'.format(bechdel['imdbid'], bechdel['year'])
@@ -104,7 +106,7 @@ class Root(object):
             omdb_response = requests.get(omdb_request_url).json()
         except requests.ConnectionError:
             error_message = {'message': 'Failed to get requested information from the OMDB API'}
-            self.error(**error_message)
+            return self.error(**error_message)
 
         if omdb_response.has_key('Error'):
             error_message = {'message': "{0}: {1}".format(omdb_response['Error'], bechdel['imdbid'])}
