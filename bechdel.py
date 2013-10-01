@@ -285,7 +285,7 @@ def update_database(data):
                     make_updates['genre']= data.get('Genre')
 
                 if make_updates != {}:
-                    update_query = "update movies set {0} where id = {1}".format(', '.join(["{0} = '{1}'".format(k, v) for k,v in make_updates.iteritems()]), check_existing[0])
+                    update_query = "update movies set {0} where id = {1}".format(', '.join(["{0} = '{1}'".format(k, str(v).replace("'", "''")) for k,v in make_updates.iteritems()]), check_existing[0])
                     database_cursor.execute(update_query)
                     database_connection.commit()
                     
