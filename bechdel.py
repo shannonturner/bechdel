@@ -198,14 +198,25 @@ def wrap_in_css(source):
     """ wrap_in_css(source): Wraps the provided source in formatting and necessary API data disclosures.
     """
 
+    database_connection = psycopg2.connect(bechdel_credentials.database_connection_details)
+    database_cursor = database_connection.cursor()
+
+    database_cursor.execute("select count(*) from movies")
+    movies_count = database_cursor.fetchone()[0]
+
     page_source = []
 
-    page_source.append('<p><h2 style="text-align: center;">The Bechdel-Tomato-Movie Database</h2></p>')
+    page_source.append('<p><h2 style="text-align: center;">The Bechdel-Tomato Movie Database</h2></p>')
 
     page_source.extend(source)
 
-    page_source.append('<br> <br> <form method=post action=index>Search for a movie by title or IMDB ID: <input type=text name=search><input type=submit value=Go></form> <br> <br> <hr width=50%> <br> <i>All data provided by <a href="http://bechdeltest.com/api/" target="_blank">The Bechdel Test API</a> and <a href="http://omdbapi.com/" target="_blank">The Open Movie Database API</a> (which includes data from <a href="http://www.rottentomatoes.com/" target="_blank">Rotten Tomatoes</a>)</i>')
+    page_source.append('<br> <br> <form method=post action=index>Search for a movie by title or IMDB ID: <input type=text name=search><input type=submit value=Go></form> <br> <br>')
+    page_source.append('<hr width=50%> <br>')
+    page_source.append('<br>The Bechdel-Tomato Movie Database has rating information for <b>{0}</b> movies.<br>'.format(movies_count))    
+    page_source.append('<i>All data provided by <a href="http://bechdeltest.com/api/" target="_blank">The Bechdel Test API</a> and <a href="http://omdbapi.com/" target="_blank">The Open Movie Database API</a> (which includes data from <a href="http://www.rottentomatoes.com/" target="_blank">Rotten Tomatoes</a>)</i>')
     page_source.append('<br> <i> This webpage is open-source.  Check out the code and submit feature requests and bugs here: <a href="https://github.com/shannonturner/bechdel" target="_blank">https://github.com/shannonturner/bechdel</a> </i> ')
+
+    database_connection.close()
 
     return page_source
         
