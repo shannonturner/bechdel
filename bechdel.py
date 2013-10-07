@@ -146,7 +146,7 @@ class Root(object):
             higher_query = "select imdb_id, title, bechdel_rating, imdb_rating, tomato_meter, genre from movies where bechdel_rating > {0} and imdb_rating > {1} and tomato_meter > {2} and (id = -1 {3}) order by bechdel_rating desc, imdb_rating desc, tomato_meter desc limit 25".format(bechdel['rating'], omdb_response['imdbRating'], omdb_response['tomatoMeter'], ''.join([" or genre like '%{0}%'".format(x) for x in omdb_response['Genre'].split(', ')]))
             database_cursor.execute(higher_query)
             for higher_rated in database_cursor.fetchall():
-                higher_table.append('<tr> <td><a href="index?search={0}><b>{1}</b></a></td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td> </tr>'.format(*higher_rated))
+                higher_table.append('<tr> <td><a href="index?search={0}"><b>{1}</b></a></td> <td>{2}</td> <td>{3}</td> <td>{4}</td> <td>{5}</td> </tr>'.format(*higher_rated))
 
             higher_table.append('</table><br> <br>')
 
