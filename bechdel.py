@@ -35,6 +35,10 @@ class Root(object):
             error_message = {'message': 'Failed to get requested information from the Bechdel Test API'}
             return self.error(**error_message)
 
+        if len(bechdel_response) == 0:
+            error_message = {'message': 'Failed to return any information from the Bechdel Test API for the search: {0}.  Please try a different search.'.format(search)}
+            return self.error(**error_message)
+
         if len(bechdel_response) > 1:
 
             if type(bechdel_response) == dict:
