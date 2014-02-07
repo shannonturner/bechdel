@@ -19,6 +19,8 @@ class Root(object):
         if search == '':
             return wrap_in_css('')
 
+        search = search.replace("'", "''")
+
         if search.isdigit():
             bechdel_request_url = 'http://bechdeltest.com/api/v1/getMovieByImdbId?imdbid={0}'.format(search)
         else:
@@ -36,8 +38,7 @@ class Root(object):
             return self.error(**error_message)
 
         if len(bechdel_response) == 0:
-            error_message = {'message': 'Failed to return any information from the Bechdel Test API for the search: {0}.  Please try a different search.'.format(search)}
-            return self.error(**error_message)
+            return wrap_in_css('<i><b>Sorry, there was an error processing your request. I failed to get the requested information from the external APIs for the movie {0}</b</i>'.format(search))
 
         if len(bechdel_response) > 1:
 
