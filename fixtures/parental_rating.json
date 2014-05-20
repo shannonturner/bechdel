@@ -1,0 +1,51 @@
+[
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 1,
+    "fields": {
+      "rating": "G"
+    }
+  },
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 2,
+    "fields": {
+      "rating": "PG"
+    }
+  },
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 3,
+    "fields": {
+      "rating": "PG-13"
+    }
+  },
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 4,
+    "fields": {
+      "rating": "R"
+    }
+  },
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 5,
+    "fields": {
+      "rating": "NC-17"
+    }
+  },
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 6,
+    "fields": {
+      "rating": "X"
+    }
+  },
+  {
+    "model": "bechdel.parentalrating",
+    "pk": 7,
+    "fields": {
+      "rating": "Unrated/Not rated"
+    }
+  }
+]
