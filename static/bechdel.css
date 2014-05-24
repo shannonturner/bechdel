@@ -75,12 +75,17 @@ a {
     vertical-align: initial !important;
 }
 
+.label-lg {
+    padding: 15px;
+}
+
 .navbar_image {
     margin-top: 15px;
     margin-bottom: 15px;
     height: 150px;
     width: 150px;
     font-size: 24px;
+    background-color: #fff;
 }
 
 #message {

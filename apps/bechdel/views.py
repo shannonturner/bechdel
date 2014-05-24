@@ -269,14 +269,15 @@ class MovieView(TemplateView):
         other_movies = Movie.objects.filter(
             bechdel_rating=3,
             imdb_rating__gt=float(movie.imdb_rating) - 1.5,
-            # parental_rating__lte=movie.parental_rating.id, # TODO: or however this works
+            parental_rating__id__lte=movie.parental_rating.id,
             )
 
+        # TODO
         # If current movie has 1 genre: match the genre
         # If current movie has 2+ genres: match 2 genres
         # for genre in movie.genres[:2 if len(movie.genres) >= 2 else len(movie.genres)]:
         #     other_movies.filter(genres__contains=genre)
 
-        # context['other_movies'] = list(other_movies)
+        context['other_movies'] = list(other_movies)
 
         return render(request, self.template_name, context)

@@ -81,65 +81,166 @@
     <!-- Movie details go here -->
 
           <div class="row">
-          
+            <div class="col-lg-2"> </div>
+            <div class="col-lg-4">
               {% if movie.imdb_rating %}
-                  Imdb Rating: {{ movie.imdb_rating }} / 10
+                <h3> Imdb Rating <br> <br>
+                {% if movie.imdb_rating <= '2.0' %}
+                  <span class="label label-danger label-lg">
+                {% elif movie.imdb_rating <= '4.0' %}
+                  <span class="label label-warning label-lg">
+                {% elif movie.imdb_rating <= '6.0' %}
+                  <span class="label label-info label-lg">
+                {% elif movie.imdb_rating <= '8.0' %}
+                  <span class="label label-primary label-lg">
+                {% elif movie.imdb_rating <= '10.0' %}
+                  <span class="label label-success label-lg">
+                {% else %}
+                  <span class="label label-default">
+                {% endif %}
+                {{ movie.imdb_rating }} / 10 </span>
               {% endif %}
+            </div>
 
+            <div class="col-lg-4">
               {% if movie.tomato_user_meter %}
-                  Rotten Tomatoes User Meter: {{ movie.tomato_user_meter }} / 100
+                  <h3> Rotten Tomatoes User Meter <br> <br>
+                  {% if movie.tomato_user_meter <= 20 %}
+                    <span class="label label-danger label-lg">
+                  {% elif movie.tomato_user_meter <= 40 %}
+                    <span class="label label-warning label-lg">
+                  {% elif movie.tomato_user_meter <= 60 %}
+                    <span class="label label-info label-lg">
+                  {% elif movie.tomato_user_meter <= 80 %}
+                    <span class="label label-primary label-lg">
+                  {% elif movie.tomato_user_meter <= 100 %}
+                    <span class="label label-success label-lg">
+                  {% else %}
+                    <span class="label label-default">
+                  {% endif %}
+                  {{ movie.tomato_user_meter }} / 100 </h3>
               {% endif %}
+            </div>
 
+            <div class="col-lg-2"> </div>
           </div>
 
           <div class="row">
 
+            <div class="col-lg-4">
               {% if movie.runtime %}
-                  Runtime: {{ movie.runtime }} minutes
+                  <h3> Runtime <br> <br>
+                  <span class="label label-info label-lg"> {{ movie.runtime }} minutes </span>
+                  </h3>
               {% endif %}
+            </div>
 
-              {% if movie.parental_rating %}
-                  Parental Rating: {{ movie.parental_rating }}
+            <div class="col-lg-4">
+              {% if movie.parental_rating.rating %}
+                  <h3> Parental Rating <br> <br> 
+                  {% if movie.parental_rating.rating = 'G' %}
+                    <span class="label label-success label-lg">
+                  {% elif movie.parental_rating.rating = 'PG' %}
+                    <span class="label label-info label-lg">
+                  {% elif movie.parental_rating.rating = 'PG-13' %}
+                    <span class="label label-warning label-lg">
+                  {% elif movie.parental_rating.rating = 'R' %}
+                    <span class="label label-danger label-lg">
+                  {% elif movie.parental_rating.rating = 'NC-17' %}
+                    <span class="label label-danger label-lg">
+                  {% elif movie.parental_rating.rating = 'X' %}
+                    <span class="label label-danger label-lg">
+                  {% else %}
+                    <span class="label label-default label-lg">
+                  {% endif %}
+                    {{ movie.parental_rating.rating }} </span>
+                  </h3>
               {% endif %}
+            </div>
 
+            <div class="col-lg-4">
               {% if movie.box_office_receipts %}
-                  Box Office Receipts: ${{ movie.box_office_receipts }}
+                  <h3> Box Office Receipts <br> <br> 
+                    {% load humanize %}
+                    <span class="label label-success label-lg"> ${{ movie.box_office_receipts|intcomma }} </span>
+                  </h3>
               {% endif %}
+            </div>
 
           </div>
 
-          HEY YOU ALSO NEED TO DO GENRES HERE WOULD BE A GREAT PLACE TO DO THAT
-
-          {% if movie.plot %}
           <div class="row">
-              {{ movie.plot }} 
+            <div class="col-lg-2"> </div>
+          
+            <div class="col-lg-4">
+              {% if movie.genres %}
+                  <h2>Genre</h2><hr style="width: 75%;">
+                    {% for genre in movie.genres.name %}
+                      {% cycle '' '<br>' %}
+                      <span class="label label-info label-lg">{{ genre }}</span>
+                    {% endfor %}
+              {% endif %}
+            </div>
+
+            <div class="col-lg-4">
+              {% if movie.plot %}
+                  <h2>Plot</h2><hr style="width: 75%;">
+                    {{ movie.plot }} 
+              {% endif %}
+            </div>
+
+            <div class="col-lg-2"> </div>
           </div>
-          {% endif %}
 
     {% if other_movies %}
         <!-- Suggestions go here -->
-        <h2>{{ title }}</h2>
-    {% endif %}
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2">
+            <h2>{{ title }}</h2><hr style="width: 75%;">
+            <div class="row">
+              <div class="col-lg-3"> Movie </div>
+              <div class="col-lg-3"> Imdb Rating </div>
+              <div class="col-lg-3"> Parental Rating </div>
+              <div class="col-lg-3"> Genre </div>
+            </div>
+            {% for other_movie in other_movies %}
+              <div class="row">
+                <div class="col-lg-3"> <a href="/bechdel/movie/{{ other_movie.id }}" style="color: #fff;">{{ other_movie.title }} ({{ other_movie.year }})</a> {% include "bechdelicons.html" %} </div>
+                
+                <div class="col-lg-3"> {{ other_movie.imdb_rating }} 
+                  {% if movie.imdb_rating > suggestion.imdb_rating %}
+                      <img class="glyphicons up_arrow" style="color: #113a18;">
+                  {% elif movie.imdb_rating < suggestion.imdb_rating %}
+                      <img class="glyphicons down_arrow" style="color: #3a0609;">
+                  {% endif %}
+                </div>
 
-    {% for suggestion in other_movies %}
-      {% cycle '<div class="row container">' '' '' %}
-          <div class="col-lg-4">
-            <a href="/bechdel/movie/{{ suggestion.id }}" style="color: #fff;">{{ suggestion.title }} ({{ suggestion.year }})</a>
-            {% include "bechdelicons.html" %}
-            imdb rating: {{ suggestion.imdb_rating}}
-            {% if movie.imdb_rating > suggestion.imdb_rating %}
-                <img class="glyphicons up_arrow" style="color: #113a18;">
-            {% elif movie.imdb_rating < suggestion.imdb_rating %}
-                <img class="glyphicons down_arrow" style="color: #3a0609;">
-            {% endif %}
-            <br>
-            genres: {{ suggestion.genres }} <br>
-            plot: {{ suggestion.plot }}
+                <div class="col-lg-3"> 
+                  
+                  {% if other_movie.parental_rating.rating = 'G' %}
+                    <span class="label label-success label-lg">
+                  {% elif other_movie.parental_rating.rating = 'PG' %}
+                    <span class="label label-info label-lg">
+                  {% elif other_movie.parental_rating.rating = 'PG-13' %}
+                    <span class="label label-warning label-lg">
+                  {% elif other_movie.parental_rating.rating = 'R' %}
+                    <span class="label label-danger label-lg">
+                  {% elif other_movie.parental_rating.rating = 'NC-17' %}
+                    <span class="label label-danger label-lg">
+                  {% elif other_movie.parental_rating.rating = 'X' %}
+                    <span class="label label-danger label-lg">
+                  {% else %}
+                    <span class="label label-default label-lg">
+                  {% endif %}
+                    {{ other_movie.parental_rating.rating }} 
+                    </span>
+
+                </div>
+
+                <div class="col-lg-3"> {{ other_movie.genres }} </div>
+              </div>
+            {% endfor %}
           </div>
-        {% cycle '' '' '</div>' %}
-    {% endfor %}
-
-    {% if not other_movies|length|divisibleby:3 %}
         </div>
     {% endif %}
 
