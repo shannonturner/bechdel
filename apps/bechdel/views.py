@@ -242,7 +242,7 @@ class MovieView(TemplateView):
                     pass
                 else:
                     if omdb_response['BoxOffice'] > 0:
-                        movie.box_office_receipts = omdb_response['BoxOffice']]
+                        movie.box_office_receipts = omdb_response['BoxOffice']
 
             if movie.imdb_rating != omdb_response.get('imdbRating') and omdb_response.get('imdbRating'):
                 movie.imdb_rating = omdb_response.get('imdbRating')
