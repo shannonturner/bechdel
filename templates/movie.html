@@ -93,10 +93,10 @@
                   <span class="label label-info label-lg">
                 {% elif movie.imdb_rating <= '8.0' %}
                   <span class="label label-primary label-lg">
-                {% elif movie.imdb_rating <= '10.0' %}
+                {% elif movie.imdb_rating >= '8.1' %}
                   <span class="label label-success label-lg">
                 {% else %}
-                  <span class="label label-default">
+                  <span class="label label-default label-lg">
                 {% endif %}
                 {{ movie.imdb_rating }} / 10 </span>
               {% endif %}
@@ -173,11 +173,12 @@
             <div class="col-lg-2"> </div>
           
             <div class="col-lg-4">
-              {% if movie.genres %}
+            
+              {% if movie.genre %}
                   <h2>Genre</h2><hr style="width: 75%;">
-                    {% for genre in movie.genres.name %}
-                      {% cycle '' '<br>' %}
-                      <span class="label label-info label-lg">{{ genre }}</span>
+                    {% for genres in movie.genre.all %}
+                      <span class="label label-info label-lg">{{ genres }}</span>
+                      {% cycle '' '<br> <br>' %}
                     {% endfor %}
               {% endif %}
             </div>
@@ -237,7 +238,7 @@
 
                 </div>
 
-                <div class="col-lg-3"> {{ other_movie.genres }} </div>
+                <div class="col-lg-3"> {{ other_movie.genre.all|join:', ' }} </div>
               </div>
             {% endfor %}
           </div>

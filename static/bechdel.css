@@ -80,12 +80,14 @@ a {
 }
 
 .navbar_image {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin: 13px 5px;
+    border-radius: 50%;
+    font-size: 24px;
+    word-wrap: break-word;
     height: 150px;
     width: 150px;
-    font-size: 24px;
-    background-color: #fff;
+    padding: 15px 5px;
+    border: 0;
 }
 
 #message {
@@ -97,4 +99,8 @@ a {
     display: inline-block;
     -webkit-filter: invert(100%);
     color: #fff;
+}
+
+#twitter-widget-0 {
+    padding: 0 !important;
 }

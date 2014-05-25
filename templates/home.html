@@ -38,18 +38,13 @@
 
 <body>
 
-<div id="main_ribbon">
+<div id="main_ribbon" style="overflow: hidden; height: 1%;">
     
     <h1> Watch This Instead </h1>
     <h2> If your movie doesn't pass <a id="the_test" href="#">the test</a> <br>
     We'll find you a better one </h2>
 
     <!-- Messages go here -->
-<!--
-    <div class="alert alert-success">...</div>
-    <div class="alert alert-info">...</div>
-    <div class="alert alert-warning">...</div>
-    <div class="alert alert-danger">...</div> -->
 
     {% if messages %}
       {% for message in messages %}

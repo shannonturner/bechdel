@@ -1,13 +1,13 @@
-    {% if suggestion.bechdel_rating = 3 %}
-        <img class="glyphicons conversation bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!">
-        <img class="glyphicons female bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!">
-    {% elif suggestion.bechdel_rating = 2 %}
-        <img class="glyphicons chat bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man.">
-        <img class="glyphicons old_man bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man.">
-    {% elif suggestion.bechdel_rating = 1 %}
-        <img class="glyphicons woman bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another.">
-        <img class="glyphicons mute bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another.">
-    {% elif suggestion.bechdel_rating = 0 %}
-        <img class="glyphicons group bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow.">
-        <img class="glyphicons male bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow.">
+    {% if other_movie.bechdel_rating = 3 %}
+        <img class="glyphicons conversation bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!" src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_244_conversation.png">
+        <img class="glyphicons female bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!" src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_247_female.png">
+    {% elif other_movie.bechdel_rating = 2 %}
+        <img class="glyphicons chat bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_245_chat.png">
+        <img class="glyphicons old_man bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_034_old_man.png">
+    {% elif other_movie.bechdel_rating = 1 %}
+        <img class="glyphicons woman bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_035_woman.png">
+        <img class="glyphicons mute bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_182_mute.png">
+    {% elif other_movie.bechdel_rating = 0 %}
+        <img class="glyphicons group bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_043_group.png">
+        <img class="glyphicons male bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_246_male.png">
     {% endif %}
