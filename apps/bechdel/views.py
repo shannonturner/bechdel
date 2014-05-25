@@ -233,7 +233,7 @@ class MovieView(TemplateView):
                 movie.awards = omdb_response.get('Awards', '')[:255]
 
             if movie.poster != omdb_response.get('Poster') and omdb_response.get('Poster'):
-                movie.poster = omdb_response.get('Poster', '')[:255
+                movie.poster = omdb_response.get('Poster', '')[:255]
 
             if movie.box_office_receipts != omdb_response.get('BoxOffice') and omdb_response.get('BoxOffice'):
                 try:
