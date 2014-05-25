@@ -1,0 +1,184 @@
+[
+  {
+    "model": "bechdel.genre",
+    "pk": 1,
+    "fields": {
+      "name": "Action"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 2,
+    "fields": {
+      "name": "Adult"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 3,
+    "fields": {
+      "name": "Adventure"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 4,
+    "fields": {
+      "name": "Animation"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 5,
+    "fields": {
+      "name": "Biography"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 6,
+    "fields": {
+      "name": "Comedy"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 7,
+    "fields": {
+      "name": "Crime"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 8,
+    "fields": {
+      "name": "Documentary"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 9,
+    "fields": {
+      "name": "Drama"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 10,
+    "fields": {
+      "name": "Family"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 11,
+    "fields": {
+      "name": "Fantasy"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 12,
+    "fields": {
+      "name": "Film-Noir"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 13,
+    "fields": {
+      "name": "History"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 14,
+    "fields": {
+      "name": "Horror"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 15,
+    "fields": {
+      "name": "Music"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 16,
+    "fields": {
+      "name": "Musical"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 17,
+    "fields": {
+      "name": "Mystery"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 18,
+    "fields": {
+      "name": "N/A"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 19,
+    "fields": {
+      "name": "News"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 20,
+    "fields": {
+      "name": "Romance"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 21,
+    "fields": {
+      "name": "Sci-Fi"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 22,
+    "fields": {
+      "name": "Short"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 23,
+    "fields": {
+      "name": "Sport"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 24,
+    "fields": {
+      "name": "Thriller"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 25,
+    "fields": {
+      "name": "War"
+    }
+  },
+  {
+    "model": "bechdel.genre",
+    "pk": 26,
+    "fields": {
+      "name": "Western"
+    }
+  }
+]
