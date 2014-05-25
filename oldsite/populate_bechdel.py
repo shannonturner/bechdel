@@ -26,7 +26,7 @@ for movie in response:
         bechdel.update_database(movie_response)
 
         # OMDB / Tomato Results
-        omdb_response = requests.get('http://www.omdbapi.com/?i=tt{0}&y={1}&tomatoes=true'.format(movie['imdbid'], movie_response['year'])).json()
+        omdb_response = requests.get('http://www.omdbapi.com/?i={0}&y={1}&tomatoes=true'.format(movie['imdbid'], movie_response['year'])).json()
         bechdel.update_database(omdb_response)
 
     except Exception, e:
