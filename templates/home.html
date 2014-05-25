@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="If your movie doesn't pass the Bechdel test, we'll find you a better one">
+
+    <!-- Bootstrap -->
+    <link href="http://shannonvturner.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <title>Watch This Instead</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="http://shannonvturner.com/css/bechdel.css">
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-49936574-1', 'shannonvturner.com');
+      ga('send', 'pageview');
+
+    </script>
+
+  </head>
+
+<body>
+
+<div id="main_ribbon" style="overflow: hidden; height: 1%;">
+    
+    <h1> Watch This Instead </h1>
+    <h2> If your movie doesn't pass <a id="the_test" href="#">the test</a> <br>
+    We'll find you a better one </h2>
+
+    <!-- Messages go here -->
+
+    {% if messages %}
+      {% for message in messages %}
+            <div id="message" class="alert alert-{% if 'error' in message.tags %}danger{% else %}{{ message.tags }}{% endif %}">
+            {{ message }}
+            </div>
+      {% endfor %}
+    {% endif %}
+
+    <form id="search" method="POST" action="/bechdel/search">
+
+        {% csrf_token %}
+
+        <input type="text" placeholder="Search movie by title or imdb ID" name="q" id="movie_search{% if messages %}_msg{% endif %}" required>
+        <label for="movie_search" class="sr-only">Search movie by title or imdb ID</label>
+        <button class="lg-btn btn-info" id="search_button{% if messages %}_msg{% endif %}">Search</button>
+
+    </form>
+
+</div>
+
+    <div id="nav_ribbon">
+        {% include "nav.html" %}
+    </div>
+
+    <div id="misc_ribbon">
+        {% include "footer.html" %}
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://shannonvturner.com/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
