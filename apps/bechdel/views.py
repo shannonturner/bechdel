@@ -99,7 +99,7 @@ class SearchView(TemplateView):
                     except ObjectDoesNotExist:
                         # This movie is not yet in the database, so add it.
                         new_movie_details = {
-                            'title': movie.get('title', '').replace('&#39;', "'"),
+                            'title': movie.get('title', '').replace('&#39;', "'")[:100],
                             'year': movie.get('year'),
                             'bechdel_rating': movie.get('rating'),
                             'bechdel_disputed': movie.get('dubious'),
