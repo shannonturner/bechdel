@@ -8,6 +8,13 @@ class ParentalRating(models.Model):
     def __unicode__(self):
         return '{0}'.format(self.rating)
 
+class Genre(models.Model):
+
+    name = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return '{0}'.format(self.name)
+
 class Movie(models.Model):
 
     title = models.CharField(max_length=100)
@@ -33,9 +40,10 @@ class Movie(models.Model):
     plot = models.CharField(max_length=255, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
     awards = models.CharField(max_length=255, null=True, blank=True)
-    # poster = models.CharField(max_length=255, null=True, blank=True)
+    poster = models.CharField(max_length=255, null=True, blank=True)
 
     parental_rating = models.ForeignKey(ParentalRating, related_name='parental_rating', null=True, blank=True)
+    genre = models.ManyToManyField(Genre, related_name='genre', null=True, blank=True)
 
     # Auto-generated timestamps
     created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())
@@ -43,14 +51,6 @@ class Movie(models.Model):
 
     def __unicode__(self):
         return '{0}'.format(self.title)
-
-class Genre(models.Model):
-
-    name = models.CharField(max_length=50)
-    movie = models.ForeignKey(Movie, related_name='genres')
-
-    def __unicode__(self):
-        return '{0}'.format(self.name)
 
 class Search(models.Model):
 
