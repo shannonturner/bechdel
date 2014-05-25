@@ -205,7 +205,7 @@ class MovieView(TemplateView):
                 try:
                     movie.parental_rating = ParentalRating.objects.get(rating=omdb_response.get('Rated'))
                 except ObjectDoesNotExist:
-                    pass
+                    movie.parental_rating = ParentalRating.objects.get(id=7) # Unrated / Not rated
 
             if movie.runtime != omdb_response.get('Runtime') and omdb_response.get('Runtime'):
                 # Assume minutes
