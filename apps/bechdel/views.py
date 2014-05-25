@@ -3,10 +3,10 @@ from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F
 
 from apps.bechdel.models import Movie, ParentalRating, Genre, Search
 
+import random
 import requests
 
 class HomeView(TemplateView):
@@ -15,9 +15,19 @@ class HomeView(TemplateView):
 
     def get(self, request, **kwargs):
 
-        context = {}
+        context = self.get_context_data()
 
         return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+
+        total_movies = len(Movie.objects.all())
+
+        context = {
+            'total_movies': total_movies,
+        }
+
+        return context
 
 class SearchView(TemplateView):
 
@@ -52,6 +62,9 @@ class SearchView(TemplateView):
             direct_lookup = False
 
         # Save the search query
+        if len(query) > 100:
+            query = query[:100]
+
         new_search = Search(search=query)
         new_search.save()
 
@@ -118,7 +131,9 @@ class SearchView(TemplateView):
                 'movies': movies,
             }
 
-            return render(request, self.template_name, context)
+        context['total_movies'] = len(Movie.objects.all())
+
+        return render(request, self.template_name, context)
 
 class MovieView(TemplateView):
 
@@ -152,6 +167,18 @@ class MovieView(TemplateView):
             messages.error(request, 'Movie ID #{0} not found in our system, please try again.'.format(movie_id))
             return HttpResponseRedirect('/')
 
+        context = self.get_context_data(**{'id': movie_id,
+            'movie': movie,
+            'request': request})
+
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+
+        movie_id = kwargs.get('id')
+        movie = kwargs.get('movie')
+        request = kwargs.get('request')
+
         # Request info from the OMDB API
         try:
             omdb_response = requests.get('http://www.omdbapi.com/?i={0}{1}&y={2}&tomatoes=true'.format('tt' if 'tt' not in movie.imdb_id[:2] else '', movie.imdb_id, movie.year)).json()
@@ -164,14 +191,15 @@ class MovieView(TemplateView):
             # "Genre":"Action, Comedy, Romance"
             omdb_response_genres = omdb_response.get('Genre', '').split(',')
 
-            # if omdb_response_genres[0] != '':
-            #     for omdb_response_genre in omdb_response_genres:
-            #         if omdb_response_genre not in movie.genres:
-            #             genre = Genre(name=omdb_response_genre, movie=movie)
+            if omdb_response_genres[0] != '':
+                for omdb_response_genre in omdb_response_genres:
+                    genre = Genre.objects.filter(name=omdb_response_genre.strip())[0]
+                    if genre not in movie.genre.all():
+                        movie.genre.add(genre)
 
             # OMDB Title should take precedence over Bechdel API Title
             if movie.title != omdb_response.get('Title') and omdb_response.get('Title'):
-                movie.title = omdb_response.get('Title')
+                movie.title = omdb_response.get('Title', '')[:100]
 
             if movie.parental_rating != omdb_response.get('Rated') and omdb_response.get('Rated'):
                 try:
@@ -187,22 +215,25 @@ class MovieView(TemplateView):
                     pass
 
             if movie.director != omdb_response.get('Director') and omdb_response.get('Director'):
-                movie.director = omdb_response.get('Director')
+                movie.director = omdb_response.get('Director', '')[:100]
 
             if movie.writer != omdb_response.get('Writer') and omdb_response.get('Writer'):
-                movie.writer = omdb_response.get('Writer')
+                movie.writer = omdb_response.get('Writer', '')[:100]
 
             if movie.actors != omdb_response.get('Actors') and omdb_response.get('Actors'):
-                movie.actors = omdb_response.get('Actors')
+                movie.actors = omdb_response.get('Actors', '')[:255]
 
             if movie.plot != omdb_response.get('Plot') and omdb_response.get('Plot'):
-                movie.plot = omdb_response.get('Plot')
+                movie.plot = omdb_response.get('Plot', '')[:255]
 
             if movie.country != omdb_response.get('Country') and omdb_response.get('Country'):
-                movie.country = omdb_response.get('Country')
+                movie.country = omdb_response.get('Country', '')[:100]
 
             if movie.awards != omdb_response.get('Awards') and omdb_response.get('Awards'):
-                movie.awards = omdb_response.get('Awards')
+                movie.awards = omdb_response.get('Awards', '')[:255]
+
+            if movie.poster != omdb_response.get('Poster') and omdb_response.get('Poster'):
+                movie.poster = omdb_response.get('Poster', '')[:255
 
             if movie.box_office_receipts != omdb_response.get('BoxOffice') and omdb_response.get('BoxOffice'):
                 try:
@@ -211,7 +242,7 @@ class MovieView(TemplateView):
                     pass
                 else:
                     if omdb_response['BoxOffice'] > 0:
-                        movie.box_office_receipts = omdb_response['BoxOffice']
+                        movie.box_office_receipts = omdb_response['BoxOffice']]
 
             if movie.imdb_rating != omdb_response.get('imdbRating') and omdb_response.get('imdbRating'):
                 movie.imdb_rating = omdb_response.get('imdbRating')
@@ -258,7 +289,8 @@ class MovieView(TemplateView):
             )
 
         context = {
-            'movie': movie
+            'movie': movie,
+            'total_movies': len(Movie.objects.all())
         }
 
         if movie.bechdel_rating == 3:
@@ -270,14 +302,14 @@ class MovieView(TemplateView):
             bechdel_rating=3,
             imdb_rating__gt=float(movie.imdb_rating) - 1.5,
             parental_rating__id__lte=movie.parental_rating.id,
-            )
+            ).exclude(id=movie.id)
 
-        # TODO
-        # If current movie has 1 genre: match the genre
-        # If current movie has 2+ genres: match 2 genres
-        # for genre in movie.genres[:2 if len(movie.genres) >= 2 else len(movie.genres)]:
-        #     other_movies.filter(genres__contains=genre)
+        for genre in movie.genre.all()[:2 if len(movie.genre.all()) >= 2 else len(movie.genre.all())]:
+            other_movies = other_movies.filter(genre__name=genre.name)
 
-        context['other_movies'] = list(other_movies)
+        other_movies = list(other_movies)
 
-        return render(request, self.template_name, context)
+        # Get a random top 10
+        context['other_movies'] = random.sample(other_movies, 10 if len(other_movies) >= 10 else len(other_movies))
+
+        return context
