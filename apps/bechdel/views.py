@@ -115,8 +115,11 @@ class SearchView(TemplateView):
                         if existing_movie.bechdel_rating != movie.get('rating') and movie.get('rating'):
                             existing_movie.bechdel_rating = int(movie.get('rating'))
 
-                        if existing_movie.bechdel_disputed != bool(int(movie.get('dubious'))):
-                            existing_movie.bechdel_disputed = bool(int(movie.get('dubious')))
+                        try:
+                            if existing_movie.bechdel_disputed != bool(int(movie.get('dubious'))):
+                                existing_movie.bechdel_disputed = bool(int(movie.get('dubious')))
+                        except:
+                            existing_movie.bechdel_disputed = None
 
                         existing_movie.save()
 
