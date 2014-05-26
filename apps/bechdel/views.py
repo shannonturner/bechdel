@@ -95,18 +95,30 @@ class SearchView(TemplateView):
                 # Check to see whether it exists already in the database
                 if movie.get('imdbid'):
                     try:
-                        Movie.objects.get(imdb_id=movie['imdbid'])
+                        existing_movie = Movie.objects.get(imdb_id=movie['imdbid'])
                     except ObjectDoesNotExist:
                         # This movie is not yet in the database, so add it.
                         new_movie_details = {
                             'title': movie.get('title', '').replace('&#39;', "'")[:100],
                             'year': movie.get('year'),
                             'bechdel_rating': movie.get('rating'),
-                            'bechdel_disputed': movie.get('dubious'),
+                            'bechdel_disputed': bool(int(movie.get('dubious'))),
                             'imdb_id': movie.get('imdbid'),
                         }
                         new_movie = Movie(**new_movie_details)
                         new_movie.save()
+                    else:
+                        # Update info (except Title) if any has changed
+                        if existing_movie != movie.get('year') and move.get('year'):
+                            existing_movie.year = movie.get('year')
+
+                        if existing_movie.bechdel_rating != movie.get('rating') and movie.get('rating'):
+                            existing_movie.bechdel_rating = int(movie.get('rating'))
+
+                        if existing_movie.bechdel_disputed != bool(int(movie.get('dubious'))):
+                            existing_movie.bechdel_disputed = bool(int(movie.get('dubious')))
+
+                        existing_movie.save()
 
         if len(bechdel_response) == 1:
             try:
