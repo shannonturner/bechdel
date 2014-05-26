@@ -109,7 +109,7 @@ class SearchView(TemplateView):
                         new_movie.save()
                     else:
                         # Update info (except Title) if any has changed
-                        if existing_movie != movie.get('year') and move.get('year'):
+                        if existing_movie != movie.get('year') and movie.get('year'):
                             existing_movie.year = movie.get('year')
 
                         if existing_movie.bechdel_rating != movie.get('rating') and movie.get('rating'):
