@@ -245,7 +245,10 @@ class MovieView(TemplateView):
                         movie.box_office_receipts = omdb_response['BoxOffice']
 
             if movie.imdb_rating != omdb_response.get('imdbRating') and omdb_response.get('imdbRating'):
-                movie.imdb_rating = omdb_response.get('imdbRating')
+                try:
+                    movie.imdb_rating = float(omdb_response.get('imdbRating'))
+                except:
+                    pass
 
             if movie.tomato_meter != omdb_response.get('tomatoMeter') and omdb_response.get('tomatoMeter'):
                 try:
