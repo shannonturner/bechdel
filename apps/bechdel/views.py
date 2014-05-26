@@ -331,3 +331,51 @@ class MovieView(TemplateView):
         context['other_movies'] = random.sample(other_movies, 10 if len(other_movies) >= 10 else len(other_movies))
 
         return context
+
+class AllMovies(TemplateView):
+
+    def get(self, request, **kwargs):
+
+        query = request.GET.get('q')
+
+        context = self.get_context_data(**{'query': query,
+            'request': request,
+            })
+
+        messages.info(request, 'Showing {0} movies'.format(context['total_movies']))
+
+        return render(request, context['template_name'], context)
+
+    def get_context_data(self, **kwargs):
+
+        query = kwargs.get('query')
+
+        all_movies = Movie.objects.all().order_by('title', 'year')
+        total_movies = len(all_movies)
+
+        template_name = 'all.html'
+        categories = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+        if query:
+            if query == 'genre':
+                template_name = 'all_genre.html'
+                categories = [genre for genre in Genre.objects.all()]
+                categories.sort()
+            elif query == 'parental':
+                template_name = 'all_parental.html'
+                categories = [parent.rating for parent in ParentalRating.objects.all().order_by('id')]
+            elif query == 'years':
+                template_name = 'all_years.html'
+                categories = [movie.year for movie in all_movies]
+                categories = list(set(categories))
+                categories.sort()
+                categories.reverse()
+
+        context = {
+            'total_movies': total_movies,
+            'all_movies': all_movies,
+            'template_name': template_name,
+            'categories': categories,
+        }
+
+        return context
