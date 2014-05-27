@@ -389,3 +389,23 @@ class AllMovies(TemplateView):
         }
 
         return context
+
+class WhatIsTheTestView(TemplateView):
+
+    template_name = 'what.html'
+
+    def get(self, request, **kwargs):
+
+        context = self.get_context_data()
+
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+
+        total_movies = len(Movie.objects.all())
+
+        context = {
+            'total_movies': total_movies,
+        }
+
+        return context

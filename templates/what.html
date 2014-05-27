@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="If your movie doesn't pass the Bechdel test, we'll find you a better one">
+
+    <!-- Bootstrap -->
+    <link href="http://shannonvturner.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <title>Watch This Instead</title>
+
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="http://shannonvturner.com/css/bechdel.css">
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-49936574-1', 'shannonvturner.com');
+      ga('send', 'pageview');
+
+    </script>
+
+  </head>
+
+<body>
+
+<div id="main_ribbon" style="overflow: hidden; height: 1%;">
+    
+    <h1> Watch This Instead </h1>
+    
+    <!-- Messages go here -->
+
+    {% if messages %}
+      {% for message in messages %}
+            <div id="message" class="alert alert-{% if 'error' in message.tags %}danger{% else %}{{ message.tags }}{% endif %}">
+            {{ message }}
+            </div>
+      {% endfor %}
+    {% endif %}
+
+    <!-- Explanation of the test here -->
+
+    <div class="container">
+
+      <h2>The <a style="color: #fff;" href="http://en.wikipedia.org/wiki/Bechdel_test" target="_blank">Bechdel Test</a> is a test of women's representation in film. <br> There are three criteria:</h2>
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+          <ol>
+            <li>There must be at least two women in the film;</li>
+            <li>Who talk to one another;</li>
+            <li>About something other than a man.</li>
+          </ol>
+        </div>
+      </div>
+
+      <h3>In a sample of over 5000 movies covered by the <a style="color: #fff;" href="http://bechdeltest.com/" target="_blank">Bechdel Test website</a>:</h3>
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+            10% did not even have two women in the film;<br> <br>
+            23% had two women who never spoke to one another;<br> <br>
+            10% had two women to spoke to each other only about a man;<br> <br>
+            57% actually passed the test.
+        </div>
+      </div>
+
+      <h3>The Bechdel Test isn't even a high bar to clear -- it's the absolute minimum!</h3>
+      
+      <br>
+      <h3>Can you think of any movies where:</h3>
+      <div class="row">
+        <div class="col-lg-6 col-lg-offset-3">
+          <ol>
+            <li>There aren't two men;</li>
+            <li>Or there are two men, but they don't talk to each other;</li>
+            <li>Or they talk to each other, but they only talk about a woman?</li>
+          </ol>
+        </div>
+      </div>
+
+      <h3>It seems absurd -- but for women's representation in film, this is commonplace.</h3>
+
+    </div>
+
+    <form id="search" method="POST" action="/bechdel/search">
+
+        {% csrf_token %}
+
+        <input type="text" placeholder="Search movie by title or imdb ID" name="q" id="movie_search{% if messages %}_msg{% endif %}" required>
+        <label for="movie_search" class="sr-only">Search movie by title or imdb ID</label>
+        <button class="lg-btn btn-info" id="search_button{% if messages %}_msg{% endif %}">Search</button>
+
+    </form>
+
+</div>
+
+    <div id="nav_ribbon">
+        {% include "nav.html" %}
+    </div>
+
+    <div id="misc_ribbon">
+        {% include "footer.html" %}
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://shannonvturner.com/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
