@@ -337,8 +337,10 @@ class AllMovies(TemplateView):
     def get(self, request, **kwargs):
 
         query = request.GET.get('q')
+        genre = request.GET.get('g')
 
         context = self.get_context_data(**{'query': query,
+            'genre': genre,
             'request': request,
             })
 
@@ -349,6 +351,7 @@ class AllMovies(TemplateView):
     def get_context_data(self, **kwargs):
 
         query = kwargs.get('query')
+        genre_picked = kwargs.get('genre')
 
         all_movies = Movie.objects.all().order_by('title', 'year')
         total_movies = len(all_movies)
@@ -359,8 +362,14 @@ class AllMovies(TemplateView):
         if query:
             if query == 'genre':
                 template_name = 'all_genre.html'
-                categories = [genre for genre in Genre.objects.all()]
+                categories = [genre.name for genre in Genre.objects.all().order_by('name')]
                 categories.sort()
+                try:
+                    genre_picked = Genre.objects.get(name=genre_picked)
+                except ObjectDoesNotExist:
+                    genre_picked = None
+                else:
+                    all_movies = all_movies.filter(genre__name=genre_picked.name)
             elif query == 'parental':
                 template_name = 'all_parental.html'
                 categories = [parent.rating for parent in ParentalRating.objects.all().order_by('id')]
@@ -376,6 +385,7 @@ class AllMovies(TemplateView):
             'all_movies': all_movies,
             'template_name': template_name,
             'categories': categories,
+            'genre_picked': genre_picked,
         }
 
         return context
