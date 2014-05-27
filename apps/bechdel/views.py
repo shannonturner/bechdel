@@ -41,12 +41,12 @@ class SearchView(TemplateView):
 
         if not query:
             messages.error(request, 'Please enter your search.')
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/bechdel')
         else:
             if not ''.join([q for q in query if q.isalpha() or q.isdigit()]):
                 # Eliminate other bad queries
                 messages.error(request, 'Please enter your search.')
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/bechdel')
 
         query = query.replace("'", '&#39;')
 
@@ -75,7 +75,7 @@ class SearchView(TemplateView):
                 '''An error occurred while searching the Bechdel Test API for {0}.  
                 Please try again.'''.format(query)
                 )
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/bechdel')
 
         if direct_lookup:
             # Direct Lookup returns JSON, title search returns a list of items
@@ -87,7 +87,7 @@ class SearchView(TemplateView):
                 Either the movie does not exist in the Bechdel Test API database, 
                 or your search was too complex.  Please try again.
                 '''.format(query))
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/bechdel')
         else:
             # Loop through each response item, add to database
             for movie in bechdel_response:
@@ -128,7 +128,7 @@ class SearchView(TemplateView):
                 movie = Movie.objects.get(imdb_id=bechdel_response[0].get('imdbid'))
             except ObjectDoesNotExist:
                 messages.error(request, 'An error occurred.  Please try your search again.')
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/bechdel')
             else:
                 return HttpResponseRedirect('/bechdel/movie/{0}'.format(movie.id))
         elif len(bechdel_response) > 1:
@@ -174,13 +174,13 @@ class MovieView(TemplateView):
             movie_id = int(kwargs.get('id'))
         except (ValueError, TypeError):
             messages.error(request, 'Invalid movie ID: {0}, please try again.'.format(request.GET.get('id')))
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/bechdel')
 
         try:
             movie = Movie.objects.get(id=movie_id)
         except ObjectDoesNotExist:
             messages.error(request, 'Movie ID #{0} not found in our system, please try again.'.format(movie_id))
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/bechdel')
 
         context = self.get_context_data(**{'id': movie_id,
             'movie': movie,
