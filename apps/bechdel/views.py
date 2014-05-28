@@ -299,7 +299,7 @@ class MovieView(TemplateView):
 
         # Send the message for this movie
         self.bechdel_rating_explanations[str(movie.bechdel_rating)][0](request,
-            '''{0} has a Bechdel rating of {1}/3. That means {2} {3}'''.format(
+            u'''{0} has a Bechdel rating of {1}/3. That means {2} {3}'''.format(
                 movie.title, movie.bechdel_rating, 
                 self.bechdel_rating_explanations[str(movie.bechdel_rating)][1],
                 self.bechdel_dispute_explanation['disputed'] if movie.bechdel_disputed else self.bechdel_dispute_explanation['undisputed']
