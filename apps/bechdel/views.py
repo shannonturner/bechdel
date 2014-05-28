@@ -316,16 +316,22 @@ class MovieView(TemplateView):
         else:
             context['title'] = "Watch these instead"
 
-        other_movies = Movie.objects.filter(
-            bechdel_rating=3,
-            imdb_rating__gt=float(movie.imdb_rating) - 1.5,
-            parental_rating__id__lte=movie.parental_rating.id,
-            ).exclude(id=movie.id)
+        try:
+            float(movie.imdb_rating)
+        except:
+            # This movie does not have an imdb_rating yet (is None); don't show any suggestions.
+            other_movies = ()
+        else:
+            other_movies = Movie.objects.filter(
+                bechdel_rating=3,
+                imdb_rating__gt=float(movie.imdb_rating) - 1.5,
+                parental_rating__id__lte=movie.parental_rating.id,
+                ).exclude(id=movie.id)
 
-        for genre in movie.genre.all()[:2 if len(movie.genre.all()) >= 2 else len(movie.genre.all())]:
-            other_movies = other_movies.filter(genre__name=genre.name)
+            for genre in movie.genre.all()[:2 if len(movie.genre.all()) >= 2 else len(movie.genre.all())]:
+                other_movies = other_movies.filter(genre__name=genre.name)
 
-        other_movies = list(other_movies)
+            other_movies = list(other_movies)
 
         # Get a random top 10
         context['other_movies'] = random.sample(other_movies, 10 if len(other_movies) >= 10 else len(other_movies))
