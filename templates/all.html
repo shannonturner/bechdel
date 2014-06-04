@@ -59,50 +59,31 @@
     <div class="container">
       <h3>
         {% for category in categories %}
-          <a href="#{{category}}" style='color: #fff;'>{{ category }}</a> 
-          {% cycle '|' '|' '|' '|' '|' '|' '|' '|' '|' '|' '|' '|' '|' '<br> <br>' %}
+          <a href="/bechdel/movie?l={{category}}" style='color: #fff;'>{{ category }}</a> 
+          {% cycle ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '<br> <br>' %}
         {% endfor %}
-        <a href="#0_9" style='color: #fff;'>0-9</a>
+        <a href="/bechdel/movie?l=0" style='color: #fff;'>0-9</a>
       </h3>
     </div>
 
-    <div class="container"> 
-      {% for category in categories %}
-        <h2 style="margin-top: 0;"><a name="{{category}}" style="color: #fff;">{{ category }}</a></h2>
-        <div class="row">
-        {% for movie in all_movies %}
-          {% if movie.title.0 == category %}
-              <div class="col-lg-4" style="background-color: #5b8ee8">
-                <a href="/bechdel/movie/{{ movie.id }}" style="color: #fff;">{{ movie.title }} ({{ movie.year }})</a>
-              </div>
-          {% endif %}
-        {% endfor %}
-        </div>
-        <div class="row">
-          <a href="#top" style="color: #fff;">Back to top</a>
-        </div>
-        <hr style="width: 60%; margin-bottom: 5px;">
-      {% endfor %}
-    </div>
+        {% if letter_picked %}
 
-    <!-- Now, 0-9 for films that didn't meet A-Z -->
+        <div class="container"> 
+            <h2 style="margin-top: 0;">{{ letter_picked.name }}</h2>
+            <div class="row">
+            {% for movie in all_movies %}
+                  <div class="col-lg-4" style="background-color: #5b8ee8">
+                    <a href="/bechdel/movie/{{ movie.id }}" style="color: #fff;">{{ movie.title }} ({{ movie.year }})</a>
+                  </div>
+            {% endfor %}
+            </div>
+        </div>
 
-    <div class="container"> 
-        <h2 style="margin-top: 0;"><a name="0_9" style="color: #fff;">0-9</a></h2>
-        <div class="row">
-        {% for movie in all_movies %}
-          {% if movie.title.0 not in categories %}
-              <div class="col-lg-4" style="background-color: #5b8ee8">
-                <a href="/bechdel/movie/{{ movie.id }}" style="color: #fff;">{{ movie.title }} ({{ movie.year }})</a>
-              </div>
-          {% endif %}
-        {% endfor %}
-        </div>
-        <div class="row">
-          <a href="#top" style="color: #fff;">Back to top</a>
-        </div>
-        <hr style="width: 60%;">
-    </div>
+        {% else %}
+
+        <h3> Choose a title letter from the choices above. </h3>
+
+        {% endif %}
 
     <form id="search" method="POST" action="/bechdel/search">
 
@@ -110,7 +91,11 @@
 
         <input type="text" placeholder="Search movie by title or imdb ID" name="q" id="movie_search{% if messages %}_msg{% endif %}" required>
         <label for="movie_search" class="sr-only">Search movie by title or imdb ID</label>
-        <button class="lg-btn btn-info" id="search_button" style="width: initial; margin-top: 0px;">Search again</button>
+        {% if letter_picked %}
+          <button class="lg-btn btn-info" id="search_button" style="width: initial; margin-top: 0px;">Search again</button>
+        {% else %}
+          <button class="lg-btn btn-info" id="search_button" style="width: initial;">Search again</button>
+        {% endif %}
 
     </form>
 

@@ -90,7 +90,11 @@
 
         <input type="text" placeholder="Search movie by title or imdb ID" name="q" id="movie_search{% if messages %}_msg{% endif %}" required>
         <label for="movie_search" class="sr-only">Search movie by title or imdb ID</label>
-        <button class="lg-btn btn-info" id="search_button" style="width: initial; margin-top: 0px;">Search again</button>
+        {% if genre_picked %}
+          <button class="lg-btn btn-info" id="search_button" style="width: initial; margin-top: 0px;">Search again</button>
+        {% else %}
+          <button class="lg-btn btn-info" id="search_button" style="width: initial;">Search again</button>
+        {% endif %}
 
     </form>
 

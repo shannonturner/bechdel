@@ -344,13 +344,20 @@ class AllMovies(TemplateView):
 
         query = request.GET.get('q')
         genre = request.GET.get('g')
+        decade = request.GET.get('d')
+        letter = request.GET.get('l')
+        parental = request.GET.get('p')
 
         context = self.get_context_data(**{'query': query,
             'genre': genre,
             'request': request,
+            'decade': decade,
+            'letter': letter,
+            'parental': parental,
             })
 
-        messages.info(request, 'Showing {0} movies'.format(context['total_movies']))
+        if context['showmessage']:
+            messages.info(request, 'Showing {0} movies'.format(len(context['all_movies'])))
 
         return render(request, context['template_name'], context)
 
@@ -358,12 +365,28 @@ class AllMovies(TemplateView):
 
         query = kwargs.get('query')
         genre_picked = kwargs.get('genre')
+        decade_picked = kwargs.get('decade')
+        letter_picked = kwargs.get('letter')
+        parental_picked = kwargs.get('parental')
 
         all_movies = Movie.objects.all().order_by('title', 'year')
         total_movies = len(all_movies)
 
         template_name = 'all.html'
         categories = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+        showmessage = False
+
+        if letter_picked:
+            if letter_picked in categories:
+                all_movies = all_movies.filter(title__startswith=letter_picked)
+                showmessage = True
+            elif letter_picked == '0':
+                for category in categories:
+                    all_movies = all_movies.exclude(title__startswith=category)
+                showmessage = True
+            else:
+                letter_picked = None
 
         if query:
             if query == 'genre':
@@ -376,22 +399,41 @@ class AllMovies(TemplateView):
                     genre_picked = None
                 else:
                     all_movies = all_movies.filter(genre__name=genre_picked.name)
+                    showmessage = True
             elif query == 'parental':
                 template_name = 'all_parental.html'
                 categories = [parent.rating for parent in ParentalRating.objects.all().order_by('id')]
+                try:
+                    parental_picked = ParentalRating.objects.get(rating=parental_picked)
+                except ObjectDoesNotExist:
+                    parental_picked = None
+                else:
+                    all_movies = all_movies.filter(parental_rating=parental_picked)
+                    showmessage = True
             elif query == 'years':
                 template_name = 'all_years.html'
-                categories = [movie.year for movie in all_movies]
-                categories = list(set(categories))
-                categories.sort()
-                categories.reverse()
+                categories = ['2020', '2010', '2000', '1990', '1980', '1970', '1960', '1950', '1940', '1930', '1920', '1910', '1900', '1890']
+                try:
+                    decade_picked = int(decade_picked)
+                except:
+                    decade_picked = None
+                else:
+                    if decade_picked in [1890, 1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]:
+                        all_movies = [movie for movie in all_movies if decade_picked + 10 > movie.year >= decade_picked]
+                        showmessage = True
+                    else:
+                        decade_picked = None
 
         context = {
             'total_movies': total_movies,
-            'all_movies': all_movies,
+            'all_movies': list(all_movies),
             'template_name': template_name,
             'categories': categories,
             'genre_picked': genre_picked,
+            'decade_picked': decade_picked,
+            'parental_picked': parental_picked,
+            'letter_picked': letter_picked,
+            'showmessage': showmessage,
         }
 
         return context
