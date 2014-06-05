@@ -6,7 +6,17 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="If your movie doesn't pass the Bechdel test, we'll find you a better one">
+    <meta name="description" content="If your movie doesn't pass the Bechdel test, find a better one">
+
+    <meta property="og:title" content="{{ movie.title }}">
+    <meta property="og:site_name" content="Watch This Instead">
+    <meta property="og:url" content="http://shannonvturner.com/bechdel/movie/{{ movie.id }}">
+    <meta property="og:description" content="If your movie doesn't pass the Bechdel test, find a better one">
+    {% if movie.poster and movie.poster != "N/A" %}
+    <meta property="og:image" content="{{ movie.poster }}">
+    {% else %}
+    <meta property="og:image" content="http://shannonvturner.com/images/watch_this_instead.png">
+    {% endif %}
 
     <!-- Bootstrap -->
     <link href="http://shannonvturner.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
