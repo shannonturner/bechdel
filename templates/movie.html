@@ -95,15 +95,15 @@
             <div class="col-lg-4">
               {% if movie.imdb_rating %}
                 <h3> Imdb Rating <br> <br>
-                {% if movie.imdb_rating <= '2.0' %}
+                {% if movie.imdb_rating <= 2 %}
                   <span class="label label-danger label-lg">
-                {% elif movie.imdb_rating <= '4.0' %}
+                {% elif movie.imdb_rating <= 4 %}
                   <span class="label label-warning label-lg">
-                {% elif movie.imdb_rating <= '6.0' %}
+                {% elif movie.imdb_rating <= 6 %}
                   <span class="label label-info label-lg">
-                {% elif movie.imdb_rating <= '8.0' %}
+                {% elif movie.imdb_rating <= 8 %}
                   <span class="label label-primary label-lg">
-                {% elif movie.imdb_rating >= '8.1' %}
+                {% elif movie.imdb_rating > 8 %}
                   <span class="label label-success label-lg">
                 {% else %}
                   <span class="label label-default label-lg">
