@@ -17,13 +17,13 @@ class Genre(models.Model):
 
 class Movie(models.Model):
 
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, db_index=True)
 
-    bechdel_rating = models.IntegerField()
+    bechdel_rating = models.IntegerField(db_index=True)
     bechdel_disputed = models.NullBooleanField()
 
     imdb_id = models.CharField(max_length=40, null=True, blank=True)
-    imdb_rating = models.FloatField(null=True, blank=True)
+    imdb_rating = models.FloatField(null=True, blank=True, db_index=True)
 
     tomato_meter = models.IntegerField(null=True, blank=True)
     tomato_fresh = models.IntegerField(null=True, blank=True)
@@ -31,7 +31,7 @@ class Movie(models.Model):
     tomato_user_meter = models.IntegerField(null=True, blank=True)
     tomato_user_rating = models.FloatField(null=True, blank=True)
 
-    year = models.IntegerField(null=True, blank=True)
+    year = models.IntegerField(null=True, blank=True, db_index=True)
     box_office_receipts = models.IntegerField(null=True, blank=True)
     runtime = models.IntegerField(null=True, blank=True)
     writer = models.CharField(max_length=100, null=True, blank=True)
