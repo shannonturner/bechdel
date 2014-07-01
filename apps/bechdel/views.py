@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from apps.bechdel.models import Movie, ParentalRating, Genre, Search
 
+import datetime
 import random
 import requests
 
@@ -21,7 +22,7 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        total_movies = len(Movie.objects.all())
+        total_movies = Movie.objects.count()
 
         context = {
             'total_movies': total_movies,
@@ -48,7 +49,7 @@ class SearchView(TemplateView):
                 messages.error(request, 'Please enter your search.')
                 return HttpResponseRedirect('/bechdel')
 
-        query = query.replace("'", '&#39;')
+        query = query.replace("'", '&#39;').replace('<', '').replace('>', '')
 
         if query.isdigit() or query[:2] == 'tt':
             # Query is an imdb ID; do a direct lookup
@@ -146,7 +147,7 @@ class SearchView(TemplateView):
                 'movies': movies,
             }
 
-        context['total_movies'] = len(Movie.objects.all())
+        context['total_movies'] = Movie.objects.count()
 
         return render(request, self.template_name, context)
 
@@ -194,108 +195,111 @@ class MovieView(TemplateView):
         movie = kwargs.get('movie')
         request = kwargs.get('request')
 
-        # Request info from the OMDB API
-        try:
-            omdb_response = requests.get('http://www.omdbapi.com/?i={0}{1}&y={2}&tomatoes=true'.format('tt' if 'tt' not in movie.imdb_id[:2] else '', movie.imdb_id, movie.year)).json()
-        except:
-            # If the omdb request failed, that's okay -- continue with the information we do have
-            pass
-        else:
-            # If any information is different, update it in the database.
+        last_updated = datetime.datetime.now(movie.updated_at.tzinfo) - movie.updated_at
 
-            # "Genre":"Action, Comedy, Romance"
-            omdb_response_genres = omdb_response.get('Genre', '').split(',')
+        if last_updated.days >= 90 or (movie.updated_at - movie.created_at).days < 3:
+            # Request info from the OMDB API
+            try:
+                omdb_response = requests.get('http://www.omdbapi.com/?i={0}{1}&y={2}&tomatoes=true'.format('tt' if 'tt' not in movie.imdb_id[:2] else '', movie.imdb_id, movie.year)).json()
+            except:
+                # If the omdb request failed, that's okay -- continue with the information we do have
+                pass
+            else:
+                # If any information is different, update it in the database.
 
-            if omdb_response_genres[0] != '':
-                for omdb_response_genre in omdb_response_genres:
-                    genre = Genre.objects.filter(name=omdb_response_genre.strip())[0]
-                    if genre not in movie.genre.all():
-                        movie.genre.add(genre)
+                # "Genre":"Action, Comedy, Romance"
+                omdb_response_genres = omdb_response.get('Genre', '').split(',')
 
-            # OMDB Title should take precedence over Bechdel API Title
-            if movie.title != omdb_response.get('Title') and omdb_response.get('Title'):
-                movie.title = omdb_response.get('Title', '')[:100]
+                if omdb_response_genres[0] != '':
+                    for omdb_response_genre in omdb_response_genres:
+                        genre = Genre.objects.filter(name=omdb_response_genre.strip())[0]
+                        if genre not in movie.genre.all():
+                            movie.genre.add(genre)
 
-            if movie.parental_rating != omdb_response.get('Rated') and omdb_response.get('Rated'):
-                try:
-                    movie.parental_rating = ParentalRating.objects.get(rating=omdb_response.get('Rated'))
-                except ObjectDoesNotExist:
-                    movie.parental_rating = ParentalRating.objects.get(id=7) # Unrated / Not rated
+                # OMDB Title should take precedence over Bechdel API Title
+                if movie.title != omdb_response.get('Title') and omdb_response.get('Title'):
+                    movie.title = omdb_response.get('Title', '')[:100]
 
-            if movie.runtime != omdb_response.get('Runtime') and omdb_response.get('Runtime'):
-                # Assume minutes
-                try:
-                    movie.runtime = int(''.join([i for i in omdb_response.get('Runtime', '') if i.isdigit()]))
-                except:
-                    pass
+                if movie.parental_rating != omdb_response.get('Rated') and omdb_response.get('Rated'):
+                    try:
+                        movie.parental_rating = ParentalRating.objects.get(rating=omdb_response.get('Rated'))
+                    except ObjectDoesNotExist:
+                        movie.parental_rating = ParentalRating.objects.get(id=7) # Unrated / Not rated
 
-            if movie.director != omdb_response.get('Director') and omdb_response.get('Director'):
-                movie.director = omdb_response.get('Director', '')[:100]
+                if movie.runtime != omdb_response.get('Runtime') and omdb_response.get('Runtime'):
+                    # Assume minutes
+                    try:
+                        movie.runtime = int(''.join([i for i in omdb_response.get('Runtime', '') if i.isdigit()]))
+                    except:
+                        pass
 
-            if movie.writer != omdb_response.get('Writer') and omdb_response.get('Writer'):
-                movie.writer = omdb_response.get('Writer', '')[:100]
+                if movie.director != omdb_response.get('Director') and omdb_response.get('Director'):
+                    movie.director = omdb_response.get('Director', '')[:100]
 
-            if movie.actors != omdb_response.get('Actors') and omdb_response.get('Actors'):
-                movie.actors = omdb_response.get('Actors', '')[:255]
+                if movie.writer != omdb_response.get('Writer') and omdb_response.get('Writer'):
+                    movie.writer = omdb_response.get('Writer', '')[:100]
 
-            if movie.plot != omdb_response.get('Plot') and omdb_response.get('Plot'):
-                movie.plot = omdb_response.get('Plot', '')[:255]
+                if movie.actors != omdb_response.get('Actors') and omdb_response.get('Actors'):
+                    movie.actors = omdb_response.get('Actors', '')[:255]
 
-            if movie.country != omdb_response.get('Country') and omdb_response.get('Country'):
-                movie.country = omdb_response.get('Country', '')[:100]
+                if movie.plot != omdb_response.get('Plot') and omdb_response.get('Plot'):
+                    movie.plot = omdb_response.get('Plot', '')[:255]
 
-            if movie.awards != omdb_response.get('Awards') and omdb_response.get('Awards'):
-                movie.awards = omdb_response.get('Awards', '')[:255]
+                if movie.country != omdb_response.get('Country') and omdb_response.get('Country'):
+                    movie.country = omdb_response.get('Country', '')[:100]
 
-            if movie.poster != omdb_response.get('Poster') and omdb_response.get('Poster'):
-                movie.poster = omdb_response.get('Poster', '')[:255]
+                if movie.awards != omdb_response.get('Awards') and omdb_response.get('Awards'):
+                    movie.awards = omdb_response.get('Awards', '')[:255]
 
-            if movie.box_office_receipts != omdb_response.get('BoxOffice') and omdb_response.get('BoxOffice'):
-                try:
-                    omdb_response['BoxOffice'] = int(omdb_response['BoxOffice'].replace('$','').replace('M','00000').replace('.',''))
-                except:
-                    pass
-                else:
-                    if omdb_response['BoxOffice'] > 0:
-                        movie.box_office_receipts = omdb_response['BoxOffice']
+                if movie.poster != omdb_response.get('Poster') and omdb_response.get('Poster'):
+                    movie.poster = omdb_response.get('Poster', '')[:255]
 
-            if movie.imdb_rating != omdb_response.get('imdbRating') and omdb_response.get('imdbRating'):
-                try:
-                    movie.imdb_rating = float(omdb_response.get('imdbRating'))
-                except:
-                    pass
+                if movie.box_office_receipts != omdb_response.get('BoxOffice') and omdb_response.get('BoxOffice'):
+                    try:
+                        omdb_response['BoxOffice'] = int(omdb_response['BoxOffice'].replace('$','').replace('M','00000').replace('.',''))
+                    except:
+                        pass
+                    else:
+                        if omdb_response['BoxOffice'] > 0:
+                            movie.box_office_receipts = omdb_response['BoxOffice']
 
-            if movie.tomato_meter != omdb_response.get('tomatoMeter') and omdb_response.get('tomatoMeter'):
-                try:
-                    movie.tomato_meter = int(omdb_response.get('tomatoMeter'))
-                except:
-                    pass
+                if movie.imdb_rating != omdb_response.get('imdbRating') and omdb_response.get('imdbRating'):
+                    try:
+                        movie.imdb_rating = float(omdb_response.get('imdbRating'))
+                    except:
+                        pass
 
-            if movie.tomato_fresh != omdb_response.get('tomatoFresh') and omdb_response.get('tomatoFresh'):
-                try:
-                    movie.tomato_fresh = int(omdb_response.get('tomatoFresh'))
-                except:
-                    pass
+                if movie.tomato_meter != omdb_response.get('tomatoMeter') and omdb_response.get('tomatoMeter'):
+                    try:
+                        movie.tomato_meter = int(omdb_response.get('tomatoMeter'))
+                    except:
+                        pass
 
-            if movie.tomato_rotten != omdb_response.get('tomatoRotten') and omdb_response.get('tomatoRotten'):
-                try:
-                    movie.tomato_rotten = int(omdb_response.get('tomatoRotten'))
-                except:
-                    pass
+                if movie.tomato_fresh != omdb_response.get('tomatoFresh') and omdb_response.get('tomatoFresh'):
+                    try:
+                        movie.tomato_fresh = int(omdb_response.get('tomatoFresh'))
+                    except:
+                        pass
 
-            if movie.tomato_user_meter != omdb_response.get('tomatoUserMeter') and omdb_response.get('tomatoUserMeter'):
-                try:
-                    movie.tomato_user_meter = int(omdb_response.get('tomatoUserMeter'))
-                except:
-                    pass
+                if movie.tomato_rotten != omdb_response.get('tomatoRotten') and omdb_response.get('tomatoRotten'):
+                    try:
+                        movie.tomato_rotten = int(omdb_response.get('tomatoRotten'))
+                    except:
+                        pass
 
-            if movie.tomato_user_rating != omdb_response.get('tomatoUserRating') and omdb_response.get('tomatoUserRating'):
-                try:
-                    movie.tomato_meter = float(omdb_response.get('tomatoUserRating'))
-                except:
-                    pass
+                if movie.tomato_user_meter != omdb_response.get('tomatoUserMeter') and omdb_response.get('tomatoUserMeter'):
+                    try:
+                        movie.tomato_user_meter = int(omdb_response.get('tomatoUserMeter'))
+                    except:
+                        pass
 
-            movie.save()
+                if movie.tomato_user_rating != omdb_response.get('tomatoUserRating') and omdb_response.get('tomatoUserRating'):
+                    try:
+                        movie.tomato_meter = float(omdb_response.get('tomatoUserRating'))
+                    except:
+                        pass
+
+                movie.save()
 
         # Send the message for this movie
         self.bechdel_rating_explanations[str(movie.bechdel_rating)][0](request,
@@ -308,7 +312,7 @@ class MovieView(TemplateView):
 
         context = {
             'movie': movie,
-            'total_movies': len(Movie.objects.all())
+            'total_movies': Movie.objects.count()
         }
 
         if movie.bechdel_rating == 3:
@@ -322,7 +326,7 @@ class MovieView(TemplateView):
             # This movie does not have an imdb_rating yet (is None); don't show any suggestions.
             other_movies = ()
         else:
-            other_movies = Movie.objects.filter(
+            other_movies = Movie.objects.select_related('parental_rating', 'genre').filter(
                 bechdel_rating=3,
                 imdb_rating__gt=float(movie.imdb_rating) - 1.5,
                 parental_rating__id__lte=movie.parental_rating.id,
@@ -369,8 +373,8 @@ class AllMovies(TemplateView):
         letter_picked = kwargs.get('letter')
         parental_picked = kwargs.get('parental')
 
-        all_movies = Movie.objects.all().order_by('title', 'year')
-        total_movies = len(all_movies)
+        all_movies = Movie.objects
+        total_movies = Movie.objects.count()
 
         template_name = 'all.html'
         categories = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -379,11 +383,11 @@ class AllMovies(TemplateView):
 
         if letter_picked:
             if letter_picked in categories:
-                all_movies = all_movies.filter(title__startswith=letter_picked)
+                all_movies = all_movies.filter(title__startswith=letter_picked).order_by('title', 'year')
                 showmessage = True
             elif letter_picked == '0':
                 for category in categories:
-                    all_movies = all_movies.exclude(title__startswith=category)
+                    all_movies = all_movies.exclude(title__startswith=category).order_by('title', 'year')
                 showmessage = True
             else:
                 letter_picked = None
@@ -398,7 +402,7 @@ class AllMovies(TemplateView):
                 except ObjectDoesNotExist:
                     genre_picked = None
                 else:
-                    all_movies = all_movies.filter(genre__name=genre_picked.name)
+                    all_movies = all_movies.filter(genre__name=genre_picked.name).order_by('title', 'year')
                     showmessage = True
             elif query == 'parental':
                 template_name = 'all_parental.html'
@@ -408,7 +412,7 @@ class AllMovies(TemplateView):
                 except ObjectDoesNotExist:
                     parental_picked = None
                 else:
-                    all_movies = all_movies.filter(parental_rating=parental_picked)
+                    all_movies = all_movies.filter(parental_rating=parental_picked).order_by('title', 'year')
                     showmessage = True
             elif query == 'years':
                 template_name = 'all_years.html'
@@ -419,14 +423,14 @@ class AllMovies(TemplateView):
                     decade_picked = None
                 else:
                     if decade_picked in [1890, 1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]:
-                        all_movies = [movie for movie in all_movies if decade_picked + 10 > movie.year >= decade_picked]
+                        all_movies = [movie for movie in all_movies.iterator() if decade_picked + 10 > movie.year >= decade_picked]
                         showmessage = True
                     else:
                         decade_picked = None
 
         context = {
             'total_movies': total_movies,
-            'all_movies': list(all_movies),
+            'all_movies': all_movies,
             'template_name': template_name,
             'categories': categories,
             'genre_picked': genre_picked,
@@ -450,7 +454,7 @@ class WhatIsTheTestView(TemplateView):
 
     def get_context_data(self, **kwargs):
 
-        total_movies = len(Movie.objects.all())
+        total_movies = Movie.objects.count()
 
         context = {
             'total_movies': total_movies,
