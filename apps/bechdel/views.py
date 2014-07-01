@@ -335,10 +335,12 @@ class MovieView(TemplateView):
             for genre in movie.genre.all()[:2 if len(movie.genre.all()) >= 2 else len(movie.genre.all())]:
                 other_movies = other_movies.filter(genre__name=genre.name)
 
-            other_movies = list(other_movies)
+            sample_size = 10 if other_movies.count() >= 10 else other_movies.count()
 
-        # Get a random top 10
-        context['other_movies'] = random.sample(other_movies, 10 if len(other_movies) >= 10 else len(other_movies))
+            # Consider other ways of handling this as well, especially if sample size is too large
+
+            # Get a random top 10
+            context['other_movies'] = random.sample(other_movies, sample_size)
 
         return context
 
