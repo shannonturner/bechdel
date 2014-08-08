@@ -41,6 +41,12 @@ class SearchView(TemplateView):
         query = request.POST.get('q')
 
         if not query:
+            try:
+                query = request.GET.get('q')
+            except:
+                query = False
+
+        if not query:
             messages.error(request, 'Please enter your search.')
             return HttpResponseRedirect('/bechdel')
         else:
@@ -150,6 +156,8 @@ class SearchView(TemplateView):
         context['total_movies'] = Movie.objects.count()
 
         return render(request, self.template_name, context)
+
+    get = post
 
 class MovieView(TemplateView):
 
@@ -461,5 +469,56 @@ class WhatIsTheTestView(TemplateView):
         context = {
             'total_movies': total_movies,
         }
+
+        return context
+
+class BechdelBotView(TemplateView):
+
+    template_name = 'bot.html'
+
+    def get(self, request, **kwargs):
+
+        title = request.GET.get('t')
+
+        context = self.get_context_data(**{
+                'title': title,
+            })
+
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+
+        title = kwargs.get('title')
+
+        try:
+            movie = Movie.objects.filter(title__icontains=title)
+        except:
+            context = {
+                'items': -1,
+                'search': title,
+            }
+        else:
+            context = {
+                'items': len(movie),
+                'search': title,
+            }
+
+            if len(movie) == 0:
+                pass
+            elif len(movie) > 1:
+                context.update({
+                    'url': 'http://shannonvturner.com/bechdel/search/q?={0}'.format(title),
+                })
+            else:
+                movie = movie[0]
+
+                context.update({
+                        'title': movie.title,
+                        'pass_fail': 'passed' if movie.bechdel_rating == 3 else 'failed',
+                        'id': movie.id,
+                    })
+
+        import json
+        context = {'json': json.dumps(context)}
 
         return context

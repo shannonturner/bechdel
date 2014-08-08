@@ -3,7 +3,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-from apps.bechdel.views import HomeView, SearchView, MovieView, AllMovies, WhatIsTheTestView
+from apps.bechdel.views import HomeView, SearchView, MovieView, AllMovies, \
+    WhatIsTheTestView, BechdelBotView
 
 urlpatterns = patterns('',
     # Examples:
@@ -16,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^(?:bechdel/)?movie/(?P<id>[0-9]+)$', MovieView.as_view(), name='movie'),
     url(r'^(?:bechdel/)?movie$', AllMovies.as_view(), name='all_movies'),
     url(r'^(?:bechdel/)?what$', WhatIsTheTestView.as_view(), name='what'),
+    url(r'^(?:bechdel/)?bot$', BechdelBotView.as_view(), name='bot'),
 )
