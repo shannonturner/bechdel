@@ -1,4 +1,20 @@
-import time, sys
+# Use this to activate virtualenv on the server.
+import os, sys, site
+
+# Tell wsgi to add the Python site-packages to its path. 
+site.addsitedir('/home/sturner/.virtualenvs/bechdel/lib/python2.7/site-packages')
+
+activate_this = os.path.expanduser("~/.virtualenvs/bechdel/bin/activate_this.py")
+execfile(activate_this, dict(__file__=activate_this))
+
+# Calculate the path based on the location of the WSGI script
+project = '/home/sturner/webapps/bechdel/bechdel/'
+workspace = os.path.dirname(project)
+sys.path.append(workspace)
+
+########
+
+import time
 import requests
 import tweepy
 
@@ -41,7 +57,7 @@ else:
 
     for mention in mentions:
 
-        print "\t", mention.id, mention.text
+        # print "\t", mention.id, mention.text
 
         if mention.id > new_most_recent:
             new_most_recent = mention.id
@@ -63,11 +79,11 @@ else:
                     mention.author.screen_name, items, response.get('url', ''))
             elif items == 1:
 
-                reply = '''@{0} {1} {2} the #Bechdel test http://shannonvturner.com/bechdel/movie/{2}#s\n\n#bechdelbot'''.format(
+                reply = '''@{0} {1} {2} the #Bechdel test http://shannonvturner.com/bechdel/movie/{3}#s\n\n#bechdelbot'''.format(
                     mention.author.screen_name, response.get('title', ''), response.get('pass_fail', ''), response.get('id', ''))
 
                 if len(reply) > 140:
-                    reply = '''@{0} http://shannonvturner.com/bechdel/movie/{0}#s\n\n#bechdelbot'''.format(
+                    reply = '''@{0} http://shannonvturner.com/bechdel/movie/{1}#s\n\n#bechdelbot'''.format(
                         mention.author.screen_name, response.get('id', ''))
 
             if reply:
@@ -77,9 +93,9 @@ else:
                             'in_reply_to_status_id': mention.id,
                         })
                 except:
-                    print "[ERROR] Failed to update_status (reply: {0})".format(mention.id)
+                    print "\t[ERROR] Failed to update_status (reply: {0})".format(mention.id)
                 else:
-                    print "[OK] Sent reply to {0}".format(mention.id)
+                    print "\t[OK] Sent reply to {0}".format(mention.id)
 
     if new_most_recent:
         with open('MOST_RECENT_BECHDELBOT.txt', 'w') as most_recent:
