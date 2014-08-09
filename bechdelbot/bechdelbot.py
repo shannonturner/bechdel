@@ -56,22 +56,19 @@ else:
 
             items = response.get('items', -2)
 
-            if items < 0:
-                reply = False # fail silently
+            if items <= 0:
+                reply = False
             elif items > 1:
-                reply = '#bechdelbot found {0} movies that matched. choose one: {1}'.format(
-                    items, response.get('url', ''))
+                reply = '@{0} #bechdelbot found {1} movies that matched. choose one: {2}'.format(
+                    mention.author.screen_name, items, response.get('url', ''))
             elif items == 1:
 
-                reply = '''{0} {1} the #Bechdel test http://shannonvturner.com/bechdel/movie/{2}#s
-
-                #bechdelbot'''.format(response.get('title', ''), 
-                    response.get('pass_fail', ''), response.get('id', ''))
+                reply = '''@{0} {1} {2} the #Bechdel test http://shannonvturner.com/bechdel/movie/{2}#s\n\n#bechdelbot'''.format(
+                    mention.author.screen_name, response.get('title', ''), response.get('pass_fail', ''), response.get('id', ''))
 
                 if len(reply) > 140:
-                    reply = '''http://shannonvturner.com/bechdel/movie/{0}#s
-
-                    #bechdelbot'''.format(response.get('id', ''))
+                    reply = '''@{0} http://shannonvturner.com/bechdel/movie/{0}#s\n\n#bechdelbot'''.format(
+                        mention.author.screen_name, response.get('id', ''))
 
             if reply:
                 try:

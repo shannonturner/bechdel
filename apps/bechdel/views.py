@@ -507,7 +507,7 @@ class BechdelBotView(TemplateView):
                 pass
             elif len(movie) > 1:
                 context.update({
-                    'url': 'http://shannonvturner.com/bechdel/search/q?={0}'.format(title),
+                    'url': 'http://shannonvturner.com/bechdel/search?q={0}'.format(title),
                 })
             else:
                 movie = movie[0]
