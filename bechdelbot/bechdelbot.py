@@ -34,8 +34,10 @@ print '''
 try:
     with open('MOST_RECENT_BECHDELBOT.txt') as most_recent:
         most_recent = most_recent.read().strip()
-except:
-    print "[ERROR] Failed to open MOST_RECENT_BECHDELBOT.txt"
+    with open('BECHDELBOT_FOLLOWS.txt') as follows:
+        follows = follows.read().strip().split("\n")
+except Exception:
+    print "[ERROR] Failed to open MOST_RECENT_BECHDELBOT.txt or ..._FOLLOWS.txt"
     print '---EARLY-END---'
     sys.exit()
 else:
@@ -66,7 +68,7 @@ else:
         try:
             response = requests.get('http://shannonvturner.com/bechdel/bot?t={0}'.format(
                 mention.text.lower().replace("@bechdelbot ", "").strip())).json()
-        except:
+        except Exception:
             reply = False # fail silently
         else:
 
@@ -92,7 +94,7 @@ else:
                             'status': reply,
                             'in_reply_to_status_id': mention.id,
                         })
-                except:
+                except Exception:
                     print "\t[ERROR] Failed to update_status (reply: {0})".format(mention.id)
                 else:
                     print "\t[OK] Sent reply to {0}".format(mention.id)
@@ -100,5 +102,45 @@ else:
     if new_most_recent:
         with open('MOST_RECENT_BECHDELBOT.txt', 'w') as most_recent:
             most_recent.write(str(new_most_recent))
+
+    print "[INFO] Searching for users tweeting about the Bechdel test."
+
+    search_items = (
+        'bechdel test',
+        'bechdel',
+        'bechdeltest',
+        '#bechdeltest',
+        '#bechdel',
+    )
+
+    already_added = list(follows)
+
+    for search_item in search_items:
+        try:
+            time.sleep(.5)
+            found_users = api.search(**{
+                'q': search_item,
+                'rpp': 100,
+                })
+        except Exception:
+            print "\t[ERROR] Failed to search for users tweeting about the Bechdel test"
+        else:
+            for found_user in found_users:
+                if str(found_user.author.id) in already_added:
+                    # Skip if user has already been followed
+                    continue
+
+                try:
+                    time.sleep(.5)
+                    api.create_friendship(id=found_user.author.id)
+                except Exception:
+                    print "\t[ERROR] Failed to add id #", found_user.author.id
+                else:
+                    pass
+                finally:
+                    already_added.append("{0}".format(found_user.author.id))
+
+    with open('BECHDELBOT_FOLLOWS.txt', 'w') as follows_file:
+        follows_file.write('\n'.join(already_added))
 
     print '------END------'
