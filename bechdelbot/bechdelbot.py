@@ -123,6 +123,7 @@ else:
 
         for person_to_unfollow in people_to_unfollow:
             try:
+                time.sleep(.5)
                 api.destroy_friendship(id=person_to_unfollow)
             except Exception:
                 print "[ERROR] Failed to unfollow ", person_to_unfollow
