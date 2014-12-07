@@ -14,6 +14,7 @@ sys.path.append(workspace)
 
 ########
 
+import random
 import time
 import requests
 import tweepy
@@ -26,6 +27,8 @@ auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
 fullpath = "{0}bechdelbot/".format(project)
+
+BECHDELBOT_TWITTER_ID = 2712977612
 
 print '''
 -----START-----
@@ -44,6 +47,10 @@ except Exception:
     sys.exit()
 else:
 
+    # ################################################################# #
+    # SECTION 1:
+    # SEARCH FOR USERS WHO TWEET ABOUT THE BECHDEL TEST AND FOLLOW THEM
+    # ################################################################# #
     print "[INFO] Searching for users tweeting about the Bechdel test."
 
     search_items = (
@@ -84,6 +91,54 @@ else:
     with open('{0}BECHDELBOT_FOLLOWS.txt'.format(fullpath), 'w') as follows_file:
         follows_file.write('\n'.join(already_added))
 
+    # ################################################ #
+    # END OF SECTION 1 (FOLLOW NEW USERS)
+    # ################################################ #
+
+    # ################################################ #
+    # SECTION 2:
+    # UNFOLLOW NON-MUTUAL FOLLOWS TO AVOID FOLLOW CAP
+    # ################################################ #
+
+    # Current setting: unfollow roughly 15 times per day (2% of the time)
+    should_i_unfollow = random.randint(1, 100)
+
+    if should_i_unfollow >= 99:
+        # Unfollow oldest first.
+        # Unfollow 7-13 at a time
+        unfollow_this_many = random.randint(7, 13)
+
+        # Just a plain list of integers (IDs of the people the bot follows)
+        my_follows = api.friends_ids(id=BECHDELBOT_TWITTER_ID)
+        my_follows.reverse()
+
+        # IDs of the people following the bot
+        my_followers = api.followers_ids(id=BECHDELBOT_TWITTER_ID)
+
+        # Subtract people following me from those I'm following
+        # Keep only 7-13
+        people_to_unfollow = list(set(my_follows) - set(my_followers))[:unfollow_this_many]
+
+        assert 7 <= len(people_to_unfollow) <= 13
+
+        for person_to_unfollow in people_to_unfollow:
+            try:
+                api.destroy_friendship(id=person_to_unfollow)
+            except Exception:
+                print "[ERROR] Failed to unfollow ", person_to_unfollow
+            else:
+                print "[OK] Unfollowed ", person_to_unfollow
+    else:
+        print "[INFO] Not unfollowing this time."
+
+    # ################################################ #
+    # END OF SECTION 2 (UNFOLLOW TO AVOID FOLLOW CAP)
+    # ################################################ #
+
+    # ################################################ #
+    # SECTION 3:
+    # CHECK FOR @ MENTIONS AND REPLY DIRECTLY TO USERS
+    # ################################################ #
     if most_recent:
         mentions = api.mentions_timeline(since_id=most_recent)
     else:
@@ -102,8 +157,6 @@ else:
 
     for mention in mentions:
 
-        # print "\t", mention.id, mention.text
-
         if mention.id > new_most_recent:
             new_most_recent = mention.id
 
@@ -112,7 +165,7 @@ else:
             response = requests.get('http://shannonvturner.com/bechdel/bot?t={0}'.format(
                 mention.text.lower().replace("@bechdelbot ", "").strip())).json()
         except Exception:
-            reply = False # fail silently
+            reply = False  # fail silently
         else:
 
             items = response.get('items', -2)
@@ -145,5 +198,9 @@ else:
     if new_most_recent:
         with open('{0}MOST_RECENT_BECHDELBOT.txt'.format(fullpath), 'w') as most_recent:
             most_recent.write(str(new_most_recent))
+
+    # ################################################ #
+    # END OF SECTION 3 (REPLY TO MENTIONS)
+    # ################################################ #
 
     print '------END------'
