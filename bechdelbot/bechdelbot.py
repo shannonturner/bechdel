@@ -164,7 +164,7 @@ else:
         # Check to see whether the mention was the name of a movie
         try:
             response = requests.get('http://shannonvturner.com/bechdel/bot?t={0}'.format(
-                mention.text.lower().replace("@bechdelbot ", "").strip())).json()
+                mention.text.lower().replace("@bechdelbot ", "").strip().strip('?').strip('.'))).json()
         except Exception:
             reply = False  # fail silently
         else:
