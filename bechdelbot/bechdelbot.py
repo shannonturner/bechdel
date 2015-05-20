@@ -55,8 +55,6 @@ else:
 
     search_items = (
         'bechdel test',
-        'bechdel',
-        'bechdeltest',
         '#bechdeltest',
         '#bechdel',
     )
@@ -103,10 +101,10 @@ else:
     # Current setting: unfollow roughly 15 times per day (2% of the time)
     should_i_unfollow = random.randint(1, 100)
 
-    if should_i_unfollow >= 99:
+    if should_i_unfollow >= 92:
         # Unfollow oldest first.
         # Unfollow 7-13 at a time
-        unfollow_this_many = random.randint(7, 13)
+        unfollow_this_many = random.randint(1, 6)
 
         # Just a plain list of integers (IDs of the people the bot follows)
         my_follows = api.friends_ids(id=BECHDELBOT_TWITTER_ID)
@@ -119,11 +117,12 @@ else:
         # Keep only 7-13
         people_to_unfollow = list(set(my_follows) - set(my_followers))[:unfollow_this_many]
 
-        assert 7 <= len(people_to_unfollow) <= 13
+        assert 1 <= len(people_to_unfollow) <= 6
 
         for person_to_unfollow in people_to_unfollow:
+            rand_sleep = random.randint(3,14)
             try:
-                time.sleep(.5)
+                time.sleep(rand_sleep)
                 api.destroy_friendship(id=person_to_unfollow)
             except Exception:
                 print "[ERROR] Failed to unfollow ", person_to_unfollow
