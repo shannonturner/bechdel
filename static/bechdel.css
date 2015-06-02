@@ -76,6 +76,7 @@
 
 a {
     vertical-align: initial !important;
+    text-decoration: underline;
 }
 
 .label-lg {
