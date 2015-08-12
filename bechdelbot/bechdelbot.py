@@ -58,6 +58,8 @@ else:
         '#bechdeltest',
         '#bechdel',
     )
+    # TEMP
+    # search_items = []
 
     already_added = list(follows)
 
@@ -101,7 +103,7 @@ else:
     # Current setting: unfollow roughly 15 times per day (2% of the time)
     should_i_unfollow = random.randint(1, 100)
 
-    if should_i_unfollow >= 92:
+    if should_i_unfollow >= 88:
         # Unfollow oldest first.
         # Unfollow 7-13 at a time
         unfollow_this_many = random.randint(1, 6)
@@ -177,7 +179,7 @@ else:
                     mention.author.screen_name, items, response.get('url', ''))
             elif items == 1:
 
-                reply = '''@{0} {1} {2} the #Bechdel test http://shannonvturner.com/bechdel/movie/{3}#s\n\n#bechdelbot'''.format(
+                reply = '''.@{0} {1} {2} the #Bechdel test http://shannonvturner.com/bechdel/movie/{3}#s\n\n#bechdelbot'''.format(
                     mention.author.screen_name, response.get('title', ''), response.get('pass_fail', ''), response.get('id', ''))
 
                 if len(reply) > 140:
