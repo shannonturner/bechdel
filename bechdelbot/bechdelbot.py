@@ -175,7 +175,7 @@ else:
             if items <= 0:
                 reply = False
             elif items > 1:
-                reply = '@{0} #bechdelbot found {1} movies that matched. choose one: {2}'.format(
+                reply = '@{0} #bechdelbot found {1} movies that matched. Click one: {2}'.format(
                     mention.author.screen_name, items, response.get('url', ''))
             elif items == 1:
 
