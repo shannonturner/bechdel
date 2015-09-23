@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 from apps.bechdel.models import Movie, ParentalRating, Genre, Search
 
@@ -103,6 +103,10 @@ class SearchView(TemplateView):
                 if movie.get('imdbid'):
                     try:
                         existing_movie = Movie.objects.get(imdb_id=movie['imdbid'])
+                    except MultipleObjectsReturned:
+                        # In rare cases, more than one movie will be returned.
+                        # In these cases, we will not update the database.
+                        pass
                     except ObjectDoesNotExist:
                         # This movie is not yet in the database, so add it.
                         new_movie_details = {
@@ -133,6 +137,9 @@ class SearchView(TemplateView):
         if len(bechdel_response) == 1:
             try:
                 movie = Movie.objects.get(imdb_id=bechdel_response[0].get('imdbid'))
+            except MultipleObjectsReturned:
+                # Just get the first result. It's probably fine.
+                movie = Movie.objects.filter(imdb_id=bechdel_response[0].get('imdbid'))[0]
             except ObjectDoesNotExist:
                 messages.error(request, 'An error occurred.  Please try your search again.')
                 return HttpResponseRedirect('/bechdel')
