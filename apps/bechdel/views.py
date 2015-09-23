@@ -141,6 +141,7 @@ class SearchView(TemplateView):
             except MultipleObjectsReturned:
                 # Just get the first result. It's probably fine.
                 movie = Movie.objects.filter(imdb_id=bechdel_response[0].get('imdbid'))[0]
+                return HttpResponseRedirect('/bechdel/movie/{0}'.format(movie.id))
             except ObjectDoesNotExist:
                 messages.error(request, 'An error occurred.  Please try your search again.')
                 return HttpResponseRedirect('/bechdel')
