@@ -135,6 +135,7 @@ class SearchView(TemplateView):
                         existing_movie.save()
 
         if len(bechdel_response) == 1:
+            context = {}
             try:
                 movie = Movie.objects.get(imdb_id=bechdel_response[0].get('imdbid'))
             except MultipleObjectsReturned:
