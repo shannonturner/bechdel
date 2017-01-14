@@ -10,7 +10,7 @@
 
     <meta property="og:title" content="{{ movie.title }}">
     <meta property="og:site_name" content="Watch This Instead">
-    <meta property="og:url" content="http://shannonvturner.com/bechdel/movie/{{ movie.id }}">
+    <meta property="og:url" content="https://shannonvturner.com/bechdel/movie/{{ movie.id }}">
     <meta property="og:description" content="If your movie doesn't pass the Bechdel test, find a better one">
 
     <!-- Twitter card -->
@@ -25,12 +25,12 @@
     <meta property="og:image" content="{{ movie.poster }}">
     <meta name="twitter:image:src" content="{{ movie.poster }}">
     {% else %}
-    <meta property="og:image" content="http://shannonvturner.com/images/watch_this_instead.png">
-    <meta name="twitter:image:src" content="http://shannonvturner.com/images/watch_this_instead.png">
+    <meta property="og:image" content="https://shannonvturner.com/images/watch_this_instead.png">
+    <meta name="twitter:image:src" content="https://shannonvturner.com/images/watch_this_instead.png">
     {% endif %}
 
     <!-- Bootstrap -->
-    <link href="http://shannonvturner.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://shannonvturner.com/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,12 +39,12 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <link rel="icon" href="http://shannonvturner.com/images/watchthisinstead.ico">
+    <link rel="icon" href="https://shannonvturner.com/images/watchthisinstead.ico">
 
     <title>Watch This Instead</title>
 
-    <link href='http://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="http://shannonvturner.com/css/bechdel.css">
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu+Condensed' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="https://shannonvturner.com/css/bechdel.css">
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -74,17 +74,17 @@
     <!-- Glyphicons courtesy of http://glyphicons.com/ -->
 
     {% if movie.bechdel_rating = 3 %}
-        <img class="glyphicons conversation bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!" src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_244_conversation.png">
-        <img class="glyphicons female bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!" src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_247_female.png">
+        <img class="glyphicons conversation bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!" src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_244_conversation.png">
+        <img class="glyphicons female bechdelicons" title="This movie has two or more women who talk to each other about something other than a man!" alt="This movie has two or more women who talk to each other about something other than a man!" src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_247_female.png">
     {% elif movie.bechdel_rating = 2 %}
-        <img class="glyphicons chat bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_245_chat.png">
-        <img class="glyphicons old_man bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_034_old_man.png">
+        <img class="glyphicons chat bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man." src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_245_chat.png">
+        <img class="glyphicons old_man bechdelicons" title="This movie has two or more women who talk to each other, but they only talk about a man." alt="This movie has two or more women who talk to each other, but they only talk about a man." src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_034_old_man.png">
     {% elif movie.bechdel_rating = 1 %}
-        <img class="glyphicons woman bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_035_woman.png">
-        <img class="glyphicons mute bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_182_mute.png">
+        <img class="glyphicons woman bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another." src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_035_woman.png">
+        <img class="glyphicons mute bechdelicons" title="This movie has two or more women, but they never speak to one another." alt="This movie has two or more women, but they never speak to one another." src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_182_mute.png">
     {% elif movie.bechdel_rating = 0 %}
-        <img class="glyphicons group bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_043_group.png">
-        <img class="glyphicons male bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow." src="http://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_246_male.png">
+        <img class="glyphicons group bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow." src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_043_group.png">
+        <img class="glyphicons male bechdelicons" title="This movie doesn't even have two women in it.  Wow." alt="This movie doesn't even have two women in it.  Wow." src="https://shannonvturner.com/glyphicons_free/glyphicons/png/glyphicons_246_male.png">
     {% endif %}
 
     </h2>
@@ -295,7 +295,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="http://shannonvturner.com/bootstrap/js/bootstrap.min.js"></script>
+    <script src="https://shannonvturner.com/bootstrap/js/bootstrap.min.js"></script>
 
   </body>
 </html>
