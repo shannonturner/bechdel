@@ -3,7 +3,7 @@ from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from django.conf.settings import OMDBAPI_KEY
+from django.conf import settings
 
 from apps.bechdel.models import Movie, ParentalRating, Genre, Search
 
@@ -220,7 +220,7 @@ class MovieView(TemplateView):
         if last_updated.days >= 90 or (movie.updated_at - movie.created_at).days < 3:
             # Request info from the OMDB API
             try:
-                omdb_response = requests.get('http://www.omdbapi.com/?i={0}{1}&y={2}&apikey={3}tomatoes=true'.format('tt' if 'tt' not in movie.imdb_id[:2] else '', movie.imdb_id, movie.year, OMDBAPI_KEY)).json()
+                omdb_response = requests.get('http://www.omdbapi.com/?i={0}{1}&y={2}&apikey={3}tomatoes=true'.format('tt' if 'tt' not in movie.imdb_id[:2] else '', movie.imdb_id, movie.year, settings.OMDBAPI_KEY)).json()
             except:
                 # If the omdb request failed, that's okay -- continue with the information we do have
                 pass
