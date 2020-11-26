@@ -336,7 +336,7 @@ class MovieView(TemplateView):
             # This movie does not have an imdb_rating yet (is None); don't show any suggestions.
             other_movies = ()
         else:
-            other_movies = Movie.objects.select_related('parental_rating', 'genre').filter(
+            other_movies = Movie.objects.prefetch_related('parental_rating', 'genre').filter(
                 bechdel_rating=3,
                 imdb_rating__gt=float(movie.imdb_rating) - 1.5,
                 parental_rating__id__lte=movie.parental_rating.id,
