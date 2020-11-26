@@ -1,5 +1,4 @@
 from django.db import models
-import datetime
 
 class ParentalRating(models.Model):
 
@@ -46,10 +45,10 @@ class Movie(models.Model):
     genre = models.ManyToManyField(Genre, related_name='genre', null=True, blank=True)
 
     # Auto-generated timestamps
-    created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())
-    updated_at = models.DateTimeField(auto_now=True, default=datetime.datetime.now())
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}'.format(self.title)
 
 class Search(models.Model):
@@ -57,8 +56,8 @@ class Search(models.Model):
     search = models.CharField(max_length=100)
 
     # Auto-generated timestamps
-    created_at = models.DateTimeField(auto_now_add=True, default=datetime.datetime.now())
-    updated_at = models.DateTimeField(auto_now=True, default=datetime.datetime.now())
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}'.format(self.search)
