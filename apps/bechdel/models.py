@@ -4,14 +4,14 @@ class ParentalRating(models.Model):
 
     rating = models.CharField(max_length=40)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}'.format(self.rating)
 
 class Genre(models.Model):
 
     name = models.CharField(max_length=50)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0}'.format(self.name)
 
 class Movie(models.Model):
