@@ -342,15 +342,14 @@ class MovieView(TemplateView):
                 parental_rating__id__lte=movie.parental_rating.id,
                 ).exclude(id=movie.id)
 
-            for genre in movie.genre.all()[:2 if len(movie.genre.all()) >= 2 else len(movie.genre.all())]:
+            genres = movie.genre.all()
+            for genre in genres[:2 if len(genres) >= 2 else len(genres)]:
                 other_movies = other_movies.filter(genre__name=genre.name)
-
-            sample_size = 10 if other_movies.count() >= 10 else other_movies.count()
 
             # Consider other ways of handling this as well, especially if sample size is too large
 
-            # Get a random top 10
-            context['other_movies'] = random.sample(other_movies, sample_size)
+            # Get a random top 5
+            context['other_movies'] = other_movies.order_by('?')[:5]
 
         return context
 
