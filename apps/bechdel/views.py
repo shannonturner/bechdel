@@ -1,3 +1,7 @@
+import datetime
+import random
+import requests
+
 from django.shortcuts import render
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
@@ -7,35 +11,20 @@ from django.conf import settings
 
 from apps.bechdel.models import Movie, ParentalRating, Genre, Search
 
-import datetime
-import random
-import requests
-
-
-
 class HomeView(TemplateView):
 
     template_name = 'home.html'
 
-    def get(self, request, **kwargs):
-
-        context = self.get_context_data()
-
-        return render(request, self.template_name, context)
-
     def get_context_data(self, **kwargs):
-
+        context = super(HomeView, self).get_context_data(**kwargs)
         total_movies = Movie.objects.count()
-
-        context = {
-            'total_movies': total_movies,
-        }
-
+        context['total_movies'] = total_movies
         return context
 
 class SearchView(TemplateView):
 
-    ' Show choices when more than one movie has been returned for the query. '
+    ''' Show choices when more than one movie has been returned for the query.
+    '''
 
     template_name = 'select.html'
 
@@ -173,7 +162,8 @@ class SearchView(TemplateView):
 
 class MovieView(TemplateView):
 
-    ' Show the summary page for one movie. '
+    ''' Show the summary page for one movie.
+    '''
 
     template_name = 'movie.html'
 
@@ -468,20 +458,11 @@ class WhatIsTheTestView(TemplateView):
 
     template_name = 'what.html'
 
-    def get(self, request, **kwargs):
-
-        context = self.get_context_data()
-
-        return render(request, self.template_name, context)
-
     def get_context_data(self, **kwargs):
-
         total_movies = Movie.objects.count()
-
         context = {
             'total_movies': total_movies,
         }
-
         return context
 
 class BechdelBotView(TemplateView):
