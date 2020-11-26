@@ -51,13 +51,13 @@ class SearchView(TemplateView):
 
         if query.isdigit() or query[:2] == 'tt':
             # Query is an imdb ID; do a direct lookup
-            bechdel_request_url = 'http://bechdeltest.com/api/v1/getMovieByImdbId?imdbid={0}'.format(query)
+            bechdel_request_url = 'https://bechdeltest.com/api/v1/getMovieByImdbId?imdbid={0}'.format(query)
             direct_lookup = True
         else:
             # Remove the word 'The ' from queries to improve searching.
             if query[:4].lower() == 'the ':
                 query = query[4:]
-            bechdel_request_url = 'http://bechdeltest.com/api/v1/getMoviesByTitle?title={0}'.format(query.replace(' ', '+'))
+            bechdel_request_url = 'https://bechdeltest.com/api/v1/getMoviesByTitle?title={0}'.format(query.replace(' ', '+'))
             direct_lookup = False
 
         # Save the search query
@@ -427,13 +427,13 @@ class AllMovies(TemplateView):
                     showmessage = True
             elif query == 'years':
                 template_name = 'all_years.html'
-                categories = ['2010', '2000', '1990', '1980', '1970', '1960', '1950', '1940', '1930', '1920', '1910', '1900', '1890']
+                categories = ['2020', '2010', '2000', '1990', '1980', '1970', '1960', '1950', '1940', '1930', '1920', '1910', '1900', '1890']
                 try:
                     decade_picked = int(decade_picked)
                 except:
                     decade_picked = None
                 else:
-                    if decade_picked in [1890, 1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]:
+                    if decade_picked in [1890, 1900, 1910, 1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020]:
                         all_movies = [movie for movie in all_movies.iterator() if decade_picked + 10 > movie.year >= decade_picked]
                         showmessage = True
                     else:
@@ -499,7 +499,7 @@ class BechdelBotView(TemplateView):
                 pass
             elif len(movie) > 1:
                 context.update({
-                    'url': 'http://shannonvturner.com/bechdel/search?q={0}'.format(title),
+                    'url': 'https://shannonvturner.com/bechdel/search?q={0}'.format(title),
                 })
             else:
                 movie = movie[0]
